@@ -41,7 +41,7 @@ KeyPoll::KeyPoll()
 	pressedbackspace=false;
 
 	useFullscreenSpaces = false;
-	if (strcmp(SDL_GetPlatform(), "Mac OS X") == 0)
+	/*if (strcmp(SDL_GetPlatform(), "Mac OS X") == 0)
 	{
 		useFullscreenSpaces = true;
 		const char *hint = SDL_GetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES);
@@ -49,20 +49,20 @@ KeyPoll::KeyPoll()
 		{
 			useFullscreenSpaces = (strcmp(hint, "1") == 0);
 		}
-	}
+	}*/
 }
 
 void KeyPoll::enabletextentry()
 {
 	keybuffer="";
 	textentrymode = true;
-	SDL_StartTextInput();
+	//SDL_StartTextInput();
 }
 
 void KeyPoll::disabletextentry()
 {
 	textentrymode = false;
-	SDL_StopTextInput();
+	//SDL_StopTextInput();
 }
 
 void KeyPoll::Poll()
@@ -90,7 +90,7 @@ void KeyPoll::Poll()
 				toggleFullscreen = true;
 			}
 
-			if (textentrymode)
+			/*if (textentrymode)
 			{
 				if (evt.key.keysym.sym == SDLK_BACKSPACE)
 				{
@@ -101,7 +101,7 @@ void KeyPoll::Poll()
 				{
 					keybuffer += SDL_GetClipboardText();
 				}
-			}
+			}*/
 		}
 		else if (evt.type == SDL_KEYUP)
 		{
@@ -111,10 +111,10 @@ void KeyPoll::Poll()
 				pressedbackspace = false;
 			}
 		}
-		else if (evt.type == SDL_TEXTINPUT)
+		/*else if (evt.type == SDL_TEXTINPUT)
 		{
 			keybuffer += evt.text.text;
-		}
+		}*/
 
 		/* Mouse Input */
 		else if (evt.type == SDL_MOUSEMOTION)
@@ -166,7 +166,7 @@ void KeyPoll::Poll()
 		}
 
 		/* Controller Input */
-		else if (evt.type == SDL_CONTROLLERBUTTONDOWN)
+		/*else if (evt.type == SDL_CONTROLLERBUTTONDOWN)
 		{
 			buttonmap[(SDL_GameControllerButton) evt.cbutton.button] = true;
 		}
@@ -217,18 +217,16 @@ void KeyPoll::Poll()
 			controllers.erase(evt.cdevice.which);
 			printf("Closing %s\n", SDL_GameControllerName(toClose));
 			SDL_GameControllerClose(toClose);
-		}
+		}*/
 
 		/* Window Events */
-		else if (evt.type == SDL_WINDOWEVENT)
+		/*else if (evt.type == SDL_WINDOWEVENT)
 		{
-			/* Window Resize */
 			if (evt.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
 				resetWindow = true;
 			}
 
-			/* Window Focus */
 			else if (evt.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 			{
 				isActive = true;
@@ -253,7 +251,6 @@ void KeyPoll::Poll()
 				SDL_EnableScreenSaver();
 			}
 
-			/* Mouse Focus */
 			else if (evt.window.event == SDL_WINDOWEVENT_ENTER)
 			{
 				SDL_DisableScreenSaver();
@@ -262,7 +259,7 @@ void KeyPoll::Poll()
 			{
 				SDL_EnableScreenSaver();
 			}
-		}
+		}*/
 
 		/* Quit Event */
 		else if (evt.type == SDL_QUIT)
@@ -272,16 +269,17 @@ void KeyPoll::Poll()
 	}
 }
 
-bool KeyPoll::isDown(SDL_Keycode key)
+bool KeyPoll::isDown(int key)
 {
 	return keymap[key];
 }
 
-bool KeyPoll::isUp(SDL_Keycode key)
+bool KeyPoll::isUp(int key)
 {
 	return !keymap[key];
 }
 
+/*
 bool KeyPoll::isDown(std::vector<SDL_GameControllerButton> buttons)
 {
 	for (size_t i = 0; i < buttons.size(); i += 1)
@@ -297,11 +295,11 @@ bool KeyPoll::isDown(std::vector<SDL_GameControllerButton> buttons)
 bool KeyPoll::isDown(SDL_GameControllerButton button)
 {
 	return buttonmap[button];
-}
+}*/
 
 bool KeyPoll::controllerButtonDown()
 {
-	for (
+	/*for (
 		SDL_GameControllerButton button = SDL_CONTROLLER_BUTTON_A;
 		button < SDL_CONTROLLER_BUTTON_DPAD_UP;
 		button = (SDL_GameControllerButton) (button + 1)
@@ -310,24 +308,26 @@ bool KeyPoll::controllerButtonDown()
 		{
 			return true;
 		}
-	}
+	}*/
 	return false;
 }
 
 bool KeyPoll::controllerWantsLeft(bool includeVert)
 {
-	return (	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_LEFT] ||
+	return 0;
+	/*return (	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_LEFT] ||
 			xVel < 0 ||
 			(	includeVert &&
 				(	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_UP] ||
-					yVel < 0	)	)	);
+					yVel < 0	)	)	);*/
 }
 
 bool KeyPoll::controllerWantsRight(bool includeVert)
 {
-	return (	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] ||
+	return 0;
+	/*return (	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] ||
 			xVel > 0 ||
 			(	includeVert &&
 				(	buttonmap[SDL_CONTROLLER_BUTTON_DPAD_DOWN] ||
-					yVel > 0	)	)	);
+					yVel > 0	)	)	);*/
 }

@@ -2,6 +2,7 @@
 #include "FileSystemUtils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <SDL_image.h>
 
 // Used to load PNG data
 extern "C"
@@ -34,6 +35,7 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 
 	unsigned char *fileIn = NULL;
 	size_t length = 0;
+
 	FILESYSTEM_loadFileToMemory(filename, &fileIn, &length);
 	if (noAlpha)
 	{
@@ -56,8 +58,13 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 		0x00FF0000,
 		noAlpha ? 0x00000000 : 0xFF000000
 	);
+	
+	optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
+	SDL_FreeSurface(loadedImage);
+	free(data);
+	return optimizedImage;
 
-	if (loadedImage != NULL)
+	/*if (loadedImage != NULL)
 	{
 		optimizedImage = SDL_ConvertSurfaceFormat(
 			loadedImage,
@@ -77,7 +84,7 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 		fprintf(stderr,"Image not found: %s\n", filename);
 		SDL_assert(0 && "Image not found! See stderr.");
 		return NULL;
-	}
+	}*/
 }
 
 GraphicsResources::GraphicsResources(void)

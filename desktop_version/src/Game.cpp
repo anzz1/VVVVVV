@@ -37,81 +37,6 @@ const char* BoolToString(bool _b)
     }
 }
 
-bool GetButtonFromString(const char *pText, SDL_GameControllerButton *button)
-{
-	if (	*pText == '0' ||
-		*pText == 'a' ||
-		*pText == 'A'	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_A;
-		return true;
-	}
-	if (	strcmp(pText, "1") == 0 ||
-		*pText == 'b' ||
-		*pText == 'B'	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_B;
-		return true;
-	}
-	if (	*pText == '2' ||
-		*pText == 'x' ||
-		*pText == 'X'	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_X;
-		return true;
-	}
-	if (	*pText == '3' ||
-		*pText == 'y' ||
-		*pText == 'Y'	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_Y;
-		return true;
-	}
-	if (	*pText == '4' ||
-		strcasecmp(pText, "BACK") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_BACK;
-		return true;
-	}
-	if (	*pText == '5' ||
-		strcasecmp(pText, "GUIDE") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_GUIDE;
-		return true;
-	}
-	if (	*pText == '6' ||
-		strcasecmp(pText, "START") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_START;
-		return true;
-	}
-	if (	*pText == '7' ||
-		strcasecmp(pText, "LS") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_LEFTSTICK;
-		return true;
-	}
-	if (	*pText == '8' ||
-		strcasecmp(pText, "RS") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
-		return true;
-	}
-	if (	*pText == '9' ||
-		strcasecmp(pText, "LB") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-		return true;
-	}
-	if (	strcmp(pText, "10") == 0 ||
-		strcasecmp(pText, "RB") == 0	)
-	{
-		*button = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
-		return true;
-	}
-	return false;
-}
-
 
 Game::Game(void):
     mutebutton(0)
@@ -4353,33 +4278,6 @@ void Game::loadstats( mapclass& map, Graphics& dwgfx )
 					}
         }
 
-		if (pKey == "flipButton")
-		{
-			SDL_GameControllerButton newButton;
-			if (GetButtonFromString(pText, &newButton))
-			{
-				controllerButton_flip.push_back(newButton);
-			}
-		}
-
-		if (pKey == "enterButton")
-		{
-			SDL_GameControllerButton newButton;
-			if (GetButtonFromString(pText, &newButton))
-			{
-				controllerButton_map.push_back(newButton);
-			}
-		}
-
-		if (pKey == "escButton")
-		{
-			SDL_GameControllerButton newButton;
-			if (GetButtonFromString(pText, &newButton))
-			{
-				controllerButton_esc.push_back(newButton);
-			}
-		}
-
 		if (pKey == "controllerSensitivity")
 		{
 			controllerSensitivity = atoi(pText);
@@ -4400,19 +4298,6 @@ void Game::loadstats( mapclass& map, Graphics& dwgfx )
         dwgfx.screenbuffer->toggleLinearFilter();
     }
     dwgfx.screenbuffer->ResizeScreen(width, height);
-
-    if (controllerButton_flip.size() < 1)
-    {
-        controllerButton_flip.push_back(SDL_CONTROLLER_BUTTON_A);
-    }
-    if (controllerButton_map.size() < 1)
-    {
-        controllerButton_map.push_back(SDL_CONTROLLER_BUTTON_Y);
-    }
-    if (controllerButton_esc.size() < 1)
-    {
-        controllerButton_esc.push_back(SDL_CONTROLLER_BUTTON_B);
-    }
 }
 
 void Game::savestats( mapclass& _map, Graphics& _dwgfx )
@@ -4557,29 +4442,6 @@ void Game::savestats( mapclass& _map, Graphics& _dwgfx )
     msg = new TiXmlElement( "usingmmmmmm" );
     msg->LinkEndChild( new TiXmlText( tu.String(usingmmmmmm).c_str()));
     dataNode->LinkEndChild( msg );
-
-    for (size_t i = 0; i < controllerButton_flip.size(); i += 1)
-    {
-        msg = new TiXmlElement("flipButton");
-        msg->LinkEndChild(new TiXmlText(tu.String((int) controllerButton_flip[i]).c_str()));
-        dataNode->LinkEndChild(msg);
-    }
-    for (size_t i = 0; i < controllerButton_map.size(); i += 1)
-    {
-        msg = new TiXmlElement("enterButton");
-        msg->LinkEndChild(new TiXmlText(tu.String((int) controllerButton_map[i]).c_str()));
-        dataNode->LinkEndChild(msg);
-    }
-    for (size_t i = 0; i < controllerButton_esc.size(); i += 1)
-    {
-        msg = new TiXmlElement("escButton");
-        msg->LinkEndChild(new TiXmlText(tu.String((int) controllerButton_esc[i]).c_str()));
-        dataNode->LinkEndChild(msg);
-    }
-
-	msg = new TiXmlElement( "controllerSensitivity" );
-	msg->LinkEndChild( new TiXmlText( tu.String(controllerSensitivity).c_str()));
-	dataNode->LinkEndChild( msg );
 
     doc.SaveFile( (saveFilePath+"unlock.vvv").c_str() );
 }

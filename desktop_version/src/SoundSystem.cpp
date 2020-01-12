@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <cassert>
 #include "SoundSystem.h"
 #include "FileSystemUtils.h"
 
@@ -15,7 +16,8 @@ MusicTrack::MusicTrack(const char* fileName)
 
 MusicTrack::MusicTrack(SDL_RWops *rw)
 {
-	m_music = Mix_LoadMUS_RW(rw, 0);
+	//m_music = Mix_LoadMUS_RW(rw, 0);
+	m_music = Mix_LoadMUS_RW(rw);
 	m_isValid = true;
 	if(m_music == NULL)
 	{
@@ -54,7 +56,7 @@ SoundSystem::SoundSystem()
 	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) != 0)
 	{
 		fprintf(stderr, "Unable to initialize audio: %s\n", Mix_GetError());
-		SDL_assert(0 && "Unable to initialize audio!");
+		assert(0 && "Unable to initialize audio!");
 	}
 }
 

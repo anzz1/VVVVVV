@@ -5,7 +5,7 @@
 #include <vector>
 #include <map> // FIXME: I should feel very bad for using C++ -flibit
 
-#include "SDL.h"
+#include <SDL.h>
 
 enum Kybrd
 {
@@ -31,7 +31,7 @@ enum Kybrd
 class KeyPoll
 {
 public:
-	std::map<SDL_Keycode, bool> keymap;
+	std::map<int, bool> keymap;
 
 	bool isActive;
 
@@ -53,12 +53,12 @@ public:
 
 	void Poll();
 
-	bool isDown(SDL_Keycode key);
+	bool isDown(int key);
 
-	bool isUp(SDL_Keycode key);
+	bool isUp(int key);
 
-	bool isDown(std::vector<SDL_GameControllerButton> buttons);
-	bool isDown(SDL_GameControllerButton button);
+//	bool isDown(std::vector<SDL_GameControllerButton> buttons);
+//	bool isDown(SDL_GameControllerButton button);
 	bool controllerButtonDown();
 	bool controllerWantsLeft(bool includeVert);
 	bool controllerWantsRight(bool includeVert);
@@ -72,8 +72,8 @@ public:
 	std::string keybuffer;
 
 private:
-	std::map<SDL_JoystickID, SDL_GameController*> controllers;
-	std::map<SDL_GameControllerButton, bool> buttonmap;
+//	std::map<SDL_JoystickID, SDL_GameController*> controllers;
+	//std::map<SDL_GameControllerButton, bool> buttonmap;
 	int xVel, yVel;
 	bool useFullscreenSpaces;
 	Uint32 wasFullscreen;

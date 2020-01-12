@@ -461,9 +461,9 @@ void titlerender(Graphics& dwgfx, mapclass& map, Game& game, entityclass& obj, U
                                 game.currentmenuoption == 2 ||
                                 game.currentmenuoption == 3     )
 			{
-				dwgfx.Print( -1, 85, "Flip is bound to: " + std::string(UtilityClass::GCString(game.controllerButton_flip)) , tr, tg, tb, true);
-				dwgfx.Print( -1, 95, "Enter is bound to: "  + std::string(UtilityClass::GCString(game.controllerButton_map)), tr, tg, tb, true);
-				dwgfx.Print( -1, 105, "Menu is bound to: " + std::string(UtilityClass::GCString(game.controllerButton_esc)) , tr, tg, tb, true);
+				//dwgfx.Print( -1, 85, "Flip is bound to: " + std::string(UtilityClass::GCString(game.controllerButton_flip)) , tr, tg, tb, true);
+				//dwgfx.Print( -1, 95, "Enter is bound to: "  + std::string(UtilityClass::GCString(game.controllerButton_map)), tr, tg, tb, true);
+				//dwgfx.Print( -1, 105, "Menu is bound to: " + std::string(UtilityClass::GCString(game.controllerButton_esc)) , tr, tg, tb, true);
 			}
 
 

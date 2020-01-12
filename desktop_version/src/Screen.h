@@ -27,9 +27,9 @@ public:
 	bool glScreen;
 	int stretchMode;
 
-	SDL_Window *m_window;
-	SDL_Renderer *m_renderer;
-	SDL_Texture *m_screenTexture;
+	//SDL_Window *m_window;
+	//SDL_Renderer *m_renderer;
+	//SDL_Texture *m_screenTexture;
 	SDL_Surface* m_screen;
 
 	SDL_Rect filterSubrect;

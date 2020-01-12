@@ -19,9 +19,9 @@ extern "C"
 
 Screen::Screen()
 {
-    m_window = NULL;
-    m_renderer = NULL;
-    m_screenTexture = NULL;
+   // m_window = NULL;
+    //m_renderer = NULL;
+   // m_screenTexture = NULL;
     m_screen = NULL;
     isWindowed = true;
     stretchMode = 0;
@@ -30,20 +30,20 @@ Screen::Screen()
     filterSubrect.y = 1;
     filterSubrect.w = 318;
     filterSubrect.h = 238;
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
 	// Uncomment this next line when you need to debug -flibit
 	// SDL_SetHintWithPriority(SDL_HINT_RENDER_DRIVER, "software", SDL_HINT_OVERRIDE);
-	SDL_CreateWindowAndRenderer(
+	/*SDL_CreateWindowAndRenderer(
 		640,
 		480,
 		SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE,
 		&m_window,
 		&m_renderer
-	);
-	SDL_SetWindowTitle(m_window, "VVVVVV");
+	);*/
+	//SDL_SetWindowTitle(m_window, "VVVVVV");
 
-	unsigned char *fileIn = NULL;
+	/*unsigned char *fileIn = NULL;
 	size_t length = 0;
 	unsigned char *data;
 	unsigned int width, height;
@@ -63,11 +63,20 @@ Screen::Screen()
 	);
 	SDL_SetWindowIcon(m_window, icon);
 	SDL_FreeSurface(icon);
-	free(data);
-
+	free(data);*/
+	
+	m_screen = SDL_SetVideoMode(320, 240, 32, SDL_HWSURFACE);
+	m_screen->format->Rmask = 0x000000FF;
+	m_screen->format->Gmask = 0x0000FF00;
+	m_screen->format->Bmask = 0x00FF0000;
+	m_screen->format->Amask = 0xFF000000;
+	/*m_screen->format->Rshift = 0;
+	m_screen->format->Gshift = 16;
+	m_screen->format->Bshift = 8;
+	m_screen->format->Ashift = 24;*/
 	// FIXME: This surface should be the actual backbuffer! -flibit
-	m_screen = SDL_CreateRGBSurface(
-		0,
+	/*m_screen = SDL_CreateRGBSurface(
+		SDL_SWSURFACE,
 		320,
 		240,
 		32,
@@ -75,14 +84,14 @@ Screen::Screen()
 		0x0000FF00,
 		0x000000FF,
 		0xFF000000
-	);
-	m_screenTexture = SDL_CreateTexture(
+	);*/
+	/*m_screenTexture = SDL_CreateTexture(
 		m_renderer,
 		SDL_PIXELFORMAT_ARGB8888,
 		SDL_TEXTUREACCESS_STREAMING,
 		320,
 		240
-	);
+	);*/
 
     badSignalEffect = false;
 
@@ -91,7 +100,7 @@ Screen::Screen()
 
 void Screen::ResizeScreen(int x , int y)
 {
-	static int resX = 320;
+	/*static int resX = 320;
 	static int resY = 240;
 	if (x != -1 && y != -1)
 	{
@@ -125,12 +134,12 @@ void Screen::ResizeScreen(int x , int y)
 		SDL_RenderSetLogicalSize(m_renderer, 320, 240);
 		SDL_RenderSetIntegerScale(m_renderer, (SDL_bool) (stretchMode == 2));
 	}
-	SDL_ShowWindow(m_window);
+	SDL_ShowWindow(m_window);*/
 }
 
 void Screen::GetWindowSize(int* x, int* y)
 {
-	SDL_GetWindowSize(m_window, x, y);
+	//SDL_GetWindowSize(m_window, x, y);
 }
 
 void Screen::UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect )
@@ -145,7 +154,6 @@ void Screen::UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect )
         buffer = ApplyFilter(buffer);
     }
 
-
     FillRect(m_screen, 0x000);
     BlitSurfaceStandard(buffer,NULL,m_screen,rect);
 
@@ -153,7 +161,7 @@ void Screen::UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect )
     {
         SDL_FreeSurface(buffer);
     }
-
+    //SDL_Flip(screen);
 }
 
 const SDL_PixelFormat* Screen::GetFormat()
@@ -163,7 +171,7 @@ const SDL_PixelFormat* Screen::GetFormat()
 
 void Screen::FlipScreen()
 {
-	SDL_UpdateTexture(
+	/*SDL_UpdateTexture(
 		m_screenTexture,
 		NULL,
 		m_screen->pixels,
@@ -176,8 +184,9 @@ void Screen::FlipScreen()
 		NULL
 	);
 	SDL_RenderPresent(m_renderer);
-	SDL_RenderClear(m_renderer);
-	SDL_FillRect(m_screen, NULL, 0x00000000);
+	SDL_RenderClear(m_renderer);*/
+	SDL_Flip(m_screen);
+	SDL_FillRect(m_screen, NULL, 0);
 }
 
 void Screen::toggleFullScreen()
@@ -194,7 +203,7 @@ void Screen::toggleStretchMode()
 
 void Screen::toggleLinearFilter()
 {
-	isFiltered = !isFiltered;
+	/*isFiltered = !isFiltered;
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, isFiltered ? "linear" : "nearest");
 	SDL_DestroyTexture(m_screenTexture);
 	m_screenTexture = SDL_CreateTexture(
@@ -203,10 +212,10 @@ void Screen::toggleLinearFilter()
 		SDL_TEXTUREACCESS_STREAMING,
 		320,
 		240
-	);
+	);*/
 }
 
 void Screen::ClearScreen( int colour )
 {
-    //FillRect(m_screen, colour) ;
+	FillRect(m_screen, colour) ;
 }
