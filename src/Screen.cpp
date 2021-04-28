@@ -64,12 +64,12 @@ Screen::Screen()
 	SDL_SetWindowIcon(m_window, icon);
 	SDL_FreeSurface(icon);
 	free(data);*/
-	
-	m_screen = SDL_SetVideoMode(320, 240, 32, SDL_HWSURFACE);
-	m_screen->format->Rmask = 0x000000FF;
-	m_screen->format->Gmask = 0x0000FF00;
-	m_screen->format->Bmask = 0x00FF0000;
-	m_screen->format->Amask = 0xFF000000;
+	a_screen = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
+	m_screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 32,
+	0x00FF0000,
+	0x0000FF00,
+	0x000000FF,
+	0xFF000000);
 	/*m_screen->format->Rshift = 0;
 	m_screen->format->Gshift = 16;
 	m_screen->format->Bshift = 8;
@@ -185,7 +185,28 @@ void Screen::FlipScreen()
 	);
 	SDL_RenderPresent(m_renderer);
 	SDL_RenderClear(m_renderer);*/
-	SDL_Flip(m_screen);
+
+//	convert to 16bpp
+	Uint32 *src = (Uint32 *)m_screen->pixels;
+	Uint32 *dst = (Uint32 *)a_screen->pixels;
+	register Uint32 a,b;
+	for (Uint32 i=0;i<320*240/2;i++) {
+		a = *src++; b = *src++;
+		*dst++ =(a&0x00F80000)>>8  |	//R1
+			(a&0x0000FC00)>>5  |	//G1
+			(a&0x000000F8)>>3  |	//B1
+			(b&0x00F80000)<<8  |	//R2
+			(b&0x0000FC00)<<11 |	//G2
+			(b&0x000000F8)<<13;	//B2
+//		*dst++ =(a&0x000000F8)<<8  |	//R1
+//			(a&0x0000FC00)>>5  |	//G1
+//			(a&0x00F80000)>>19 |	//B1
+//			(b&0x000000F8)<<24 |	//R2
+//			(b&0x0000FC00)<<11 |	//G2
+//			(b&0x00F80000)>>3;	//B2
+	}
+
+	SDL_Flip(a_screen);
 	SDL_FillRect(m_screen, NULL, 0);
 }
 

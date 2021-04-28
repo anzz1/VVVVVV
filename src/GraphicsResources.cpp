@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL_image.h>
+#include <Screen.h>
 
 // Used to load PNG data
 extern "C"
@@ -59,7 +60,9 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 		noAlpha ? 0x00000000 : 0xFF000000
 	);
 	
-	optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
+//	optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
+	Screen gameScreen;
+	optimizedImage = SDL_ConvertSurface(loadedImage,gameScreen.m_screen->format,0);
 	SDL_FreeSurface(loadedImage);
 	free(data);
 	return optimizedImage;

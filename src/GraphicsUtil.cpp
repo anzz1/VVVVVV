@@ -27,6 +27,60 @@ void endian_swap(T *objp)
 	std::reverse(memp, memp + sizeof(T));
 }
 
+void SDL_BlitSurfaceWithAlpha( SDL_Surface* _src, SDL_Rect* _srcRect, SDL_Surface* _dst, SDL_Rect* _dstRect )
+{	// Limited to 32bpp ARGB/ABGR only for better performance
+#define	unlikely(x)	__builtin_expect(!!(x), 0)
+
+	Uint32	src_w , src_h , dst_w, dst_h;
+	Sint32	srcRect_x, srcRect_y, dstRect_x, dstRect_y;
+	Sint32	srcRect_w, srcRect_h;
+
+	src_w = (Uint32)_src->w; src_h = (Uint32)_src->h;
+	dst_w = (Uint32)_dst->w; dst_h = (Uint32)_dst->h;
+	if (_srcRect) {
+		srcRect_x = (Sint32)_srcRect->x; srcRect_y = (Sint32)_srcRect->y;
+		srcRect_w = (Sint32)_srcRect->w; srcRect_h = (Sint32)_srcRect->h;
+		if (unlikely(srcRect_x<0)) { srcRect_w += srcRect_x; srcRect_x = 0; }
+		if (unlikely(srcRect_y<0)) { srcRect_h += srcRect_y; srcRect_y = 0; }
+	} else {
+		srcRect_x = srcRect_y = 0; srcRect_w = src_w; srcRect_h = src_h;
+	}
+	if (_dstRect) {
+		dstRect_x = (Sint32)_dstRect->x; dstRect_y = (Sint32)_dstRect->y;
+		if (unlikely(dstRect_x<0)) { srcRect_x -= dstRect_x; srcRect_w += dstRect_x; dstRect_x = 0; }
+		if (unlikely(dstRect_y<0)) { srcRect_y -= dstRect_y; srcRect_h += dstRect_y; dstRect_y = 0; }
+	} else {
+		dstRect_x = dstRect_y = 0;
+	}
+
+	if (unlikely((srcRect_x > src_w)||(srcRect_y > src_h)||(dstRect_x > dst_w)||(dstRect_y > dst_h))) return;
+	if (unlikely((dstRect_x + srcRect_w) > dst_w)) { srcRect_w = dst_w - dstRect_x; }
+	if (unlikely((dstRect_y + srcRect_h) > dst_h)) { srcRect_h = dst_h - dstRect_y; }
+	if (unlikely((srcRect_x + srcRect_w) > src_w)) { srcRect_w = src_w - srcRect_x; }
+	if (unlikely((srcRect_y + srcRect_h) > src_h)) { srcRect_h = src_h - srcRect_y; }
+	if (unlikely((srcRect_w <= 0)||(srcRect_h <= 0))) return; 
+	register Uint32 *src = (Uint32 *)(_src->pixels) + srcRect_y*src_w + srcRect_x;
+	register Uint32 *dst = (Uint32 *)(_dst->pixels) + dstRect_y*dst_w + dstRect_x;
+	Uint32	srcadd = src_w - srcRect_w;
+	Uint32	dstadd = dst_w - srcRect_w;
+
+	if ( _src->format->Rmask == _dst->format->Rmask ) {
+		for (Uint32 y=srcRect_h; y>0 ; y--, src+=srcadd, dst+=dstadd) {
+			for (Uint32 x=srcRect_w; x>0 ; x--, dst++, src++) {
+				if (*(Uint8*)((uintptr_t)src+3)) *dst = *src;	// Write if Alpha is ON
+			}
+		}
+	} else {	// ARGB<>ABGR Blit
+		for (Uint32 y=srcRect_h; y>0 ; y--, src+=srcadd, dst+=dstadd) {
+			for (Uint32 x=srcRect_w; x>0 ; x--, dst++, src++) {
+				if (*(Uint8*)((uintptr_t)src+3)) {
+					register Uint32 a = *src;
+					*dst = (a & 0xFF00FF00) | ((a&0xFF)<<16) | ((a>>16)&0xFF);
+				}
+			}
+		}
+	}
+}
 
 SDL_Surface* GetSubSurface( SDL_Surface* metaSurface, int x, int y, int width, int height )
 {
@@ -58,80 +112,84 @@ SDL_Surface* GetSubSurface( SDL_Surface* metaSurface, int x, int y, int width, i
     //SDL_FreeSurface(preSurface);
 
     // Lastly, apply the area from the meta _surface onto the whole of the sub _surface.
-    SDL_BlitSurface(metaSurface, &area, preSurface, 0);
+    SDL_BlitSurfaceWithAlpha(metaSurface, &area, preSurface, 0);
 
     // Return the new Bitmap _surface
     return preSurface;
 }
 
 void DrawPixel( SDL_Surface *_surface, int x, int y, Uint32 pixel )
-{
-    int bpp = _surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to set */
-    Uint8 *p = (Uint8 *)_surface->pixels + y * _surface->pitch + x * bpp;
-
-    switch(bpp)
-    {
-    case 1:
-        *p = pixel;
-        break;
-
-    case 2:
-        *(Uint16 *)p = pixel;
-        break;
-
-    case 3:
-        if(SDL_BYTEORDER != SDL_BIG_ENDIAN)
-        {
-            p[0] = (pixel >> 16) & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = pixel & 0xff;
-        }
-        else
-        {
-            p[0] = pixel & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = (pixel >> 16) & 0xff;
-        }
-        break;
-
-    case 4:
-        *(Uint32 *)p = pixel;
-        break;
-    }
+{	// Limited to 32bpp only for better performance
+	*(Uint32 *)((Uint32 *)_surface->pixels + (y * _surface->w) + x) = pixel;
 }
+//    int bpp = _surface->format->BytesPerPixel;
+//    /* Here p is the address to the pixel we want to set */
+//    Uint8 *p = (Uint8 *)_surface->pixels + y * _surface->pitch + x * bpp;
+//
+//    switch(bpp)
+//    {
+//    case 1:
+//        *p = pixel;
+//        break;
+//
+//    case 2:
+//        *(Uint16 *)p = pixel;
+//        break;
+//
+//    case 3:
+//        if(SDL_BYTEORDER != SDL_BIG_ENDIAN)
+//        {
+//            p[0] = (pixel >> 16) & 0xff;
+//            p[1] = (pixel >> 8) & 0xff;
+//            p[2] = pixel & 0xff;
+//        }
+//        else
+//        {
+//            p[0] = pixel & 0xff;
+//            p[1] = (pixel >> 8) & 0xff;
+//            p[2] = (pixel >> 16) & 0xff;
+//        }
+//        break;
+//
+//    case 4:
+//        *(Uint32 *)p = pixel;
+//        break;
+//    }
+//}
 
 Uint32 ReadPixel( SDL_Surface *_surface, int x, int y )
-{
-    int bpp = _surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)_surface->pixels + y * _surface->pitch + x * bpp;
-
-    switch(bpp)
-    {
-    case 1:
-        return *p;
-        break;
-
-    case 2:
-        return *(Uint16 *)p;
-        break;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
-        break;
-
-    case 4:
-        return *(Uint32 *)p;
-        break;
-
-    default:
-        return 0;       /* shouldn't happen, but avoids warnings */
-    }
+{	// Limited to 32bpp only for better performance
+	return *(Uint32 *)((Uint32 *)_surface->pixels + (y * _surface->w) + x);
 }
+//    int bpp = _surface->format->BytesPerPixel;
+//    /* Here p is the address to the pixel we want to retrieve */
+//    Uint8 *p = (Uint8 *)_surface->pixels + y * _surface->pitch + x * bpp;
+//
+//    switch(bpp)
+//    {
+//    case 1:
+//        return *p;
+//        break;
+//
+//    case 2:
+//        return *(Uint16 *)p;
+//        break;
+//
+//    case 3:
+//        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+//            return p[0] << 16 | p[1] << 8 | p[2];
+//        else
+//            return p[0] | p[1] << 8 | p[2] << 16;
+//        break;
+//
+//    case 4:
+//        return *(Uint32 *)p;
+//        break;
+//
+//    default:
+//        return 0;       /* shouldn't happen, but avoids warnings */
+//    }
+//}
 
 SDL_Surface * ScaleSurface( SDL_Surface *_surface, int Width, int Height, SDL_Surface * Dest )
 {
@@ -218,8 +276,6 @@ SDL_Surface *  FlipSurfaceHorizontal(SDL_Surface* _src)
 		{
 			DrawPixel(ret,(_src->w -1) -x,y,ReadPixel(_src, x, y));
 		}
-
-
 	}
 
 	return ret;
@@ -234,15 +290,19 @@ SDL_Surface *  FlipSurfaceVerticle(SDL_Surface* _src)
 		return NULL;
 	}
 
-	for(Sint32 y = 0; y < _src->h; y++)
-	{
-		for(Sint32 x = 0; x < _src->w; x++)
-		{
-			DrawPixel(ret, x ,(_src->h-1) - y ,ReadPixel(_src, x, y));
-		}
+	// Limited to 32bpp only for better performance
+	Uint32 pitch = _src->pitch;
+	Uint8 *src = (Uint8 *)_src->pixels + (_src->h-1)*pitch;
+	Uint8 *dst = (Uint8 *)ret->pixels;
+	for (Uint32 y=_src->h; y>0; y--,src-=pitch,dst+=pitch) memcpy(dst,src,pitch);
 
-
-	}
+//	for(Sint32 y = 0; y < _src->h; y++)
+//	{
+//		for(Sint32 x = 0; x < _src->w; x++)
+//		{
+//			DrawPixel(ret, x ,(_src->h-1) - y ,ReadPixel(_src, x, y));
+//		}
+//	}
 
 	return ret;
 }
@@ -266,7 +326,7 @@ void BlitSurfaceStandard( SDL_Surface* _src, SDL_Rect* _srcRect, SDL_Surface* _d
     //}
     //else
     //{
-    SDL_BlitSurface( _src, _srcRect, _dest, _destRect );
+    SDL_BlitSurfaceWithAlpha( _src, _srcRect, _dest, _destRect );
     //}
 }
 
@@ -276,38 +336,78 @@ void BlitSurfaceColoured(
     SDL_Surface* _dest,
     SDL_Rect* _destRect,
     colourTransform& ct
-) {
-    SDL_Rect *tempRect = _destRect;
+) {	// Limited to 32bpp ARGB/ABGR only for better performance
+	Uint32	src_w , src_h , dst_w, dst_h;
+	Sint32	srcRect_x, srcRect_y, dstRect_x, dstRect_y;
+	Sint32	srcRect_w, srcRect_h;
 
-    const SDL_PixelFormat& fmt = *(_src->format);
-    // const SDL_PixelFormat& destfmt = *(_dest->format);
+	src_w = (Uint32)_src->w; src_h = (Uint32)_src->h;
+	dst_w = (Uint32)_dest->w; dst_h = (Uint32)_dest->h;
+	if (_srcRect) {
+		srcRect_x = (Sint32)_srcRect->x; srcRect_y = (Sint32)_srcRect->y;
+		srcRect_w = (Sint32)_srcRect->w; srcRect_h = (Sint32)_srcRect->h;
+		if (unlikely(srcRect_x<0)) { srcRect_w += srcRect_x; srcRect_x = 0; }
+		if (unlikely(srcRect_y<0)) { srcRect_h += srcRect_y; srcRect_y = 0; }
+	} else {
+		srcRect_x = srcRect_y = 0; srcRect_w = src_w; srcRect_h = src_h;
+	}
+	if (_destRect) {
+		dstRect_x = (Sint32)_destRect->x; dstRect_y = (Sint32)_destRect->y;
+		if (unlikely(dstRect_x<0)) { srcRect_x -= dstRect_x; srcRect_w += dstRect_x; dstRect_x = 0; }
+		if (unlikely(dstRect_y<0)) { srcRect_y -= dstRect_y; srcRect_h += dstRect_y; dstRect_y = 0; }
+	} else {
+		dstRect_x = dstRect_y = 0;
+	}
 
-    SDL_Surface* tempsurface =  SDL_CreateRGBSurface(
-        SDL_SWSURFACE,
-        _src->w,
-        _src->h,
-        fmt.BitsPerPixel,
-        fmt.Rmask,
-        fmt.Gmask,
-        fmt.Bmask,
-        fmt.Amask
-    );
+	if (unlikely((srcRect_x > src_w)||(srcRect_y > src_h)||(dstRect_x > dst_w)||(dstRect_y > dst_h))) return;
+	if (unlikely((dstRect_x + srcRect_w) > dst_w)) { srcRect_w = dst_w - dstRect_x; }
+	if (unlikely((dstRect_y + srcRect_h) > dst_h)) { srcRect_h = dst_h - dstRect_y; }
+	if (unlikely((srcRect_x + srcRect_w) > src_w)) { srcRect_w = src_w - srcRect_x; }
+	if (unlikely((srcRect_y + srcRect_h) > src_h)) { srcRect_h = src_h - srcRect_y; }
+	if (unlikely((srcRect_w <= 0)||(srcRect_h <= 0))) return; 
+	register Uint32 *src = (Uint32 *)(_src->pixels) + srcRect_y*src_w + srcRect_x;
+	register Uint32 *dst = (Uint32 *)(_dest->pixels) + dstRect_y*dst_w + dstRect_x;
+	register Uint32 pixelcolor = ct.colour & 0x00FFFFFF | 0xFF000000;
+	if ( _src->format->Rmask != _dest->format->Rmask ) pixelcolor = (pixelcolor & 0xFF00FF00) | ((pixelcolor&0xFF)<<16) | ((pixelcolor>>16)&0xFF);
+	Uint32	srcadd = src_w - srcRect_w;
+	Uint32	dstadd = dst_w - srcRect_w;
 
-    for(int x = 0; x < tempsurface->w; x++)
-    {
-        for(int y = 0; y < tempsurface->h; y++)
-        {
-            Uint32 pixel = ReadPixel(_src, x, y);
-            Uint32 Alpha = pixel & fmt.Amask;
-            Uint32 result = ct.colour & 0x00FFFFFF;
-            DrawPixel(tempsurface, x, y, result | Alpha);
-        }
-    }
-
-    SDL_BlitSurface(tempsurface, _srcRect, _dest, tempRect);
-    SDL_FreeSurface(tempsurface);
+	for (Uint32 y=srcRect_h; y>0 ; y--, src+=srcadd, dst+=dstadd) {
+		for (Uint32 x=srcRect_w; x>0 ; x--, dst++, src++) {
+			if (*(Uint8*)((uintptr_t)src+3)) *dst = pixelcolor;	// Write if Alpha is ON
+		}
+	}
 }
-
+//    SDL_Rect *tempRect = _destRect;
+//
+//    const SDL_PixelFormat& fmt = *(_src->format);
+//    // const SDL_PixelFormat& destfmt = *(_dest->format);
+//
+//    SDL_Surface* tempsurface =  SDL_CreateRGBSurface(
+//        SDL_SWSURFACE,
+//        _src->w,
+//        _src->h,
+//        fmt.BitsPerPixel,
+//        fmt.Rmask,
+//        fmt.Gmask,
+//        fmt.Bmask,
+//        fmt.Amask
+//    );
+//
+//    for(int x = 0; x < tempsurface->w; x++)
+//    {
+//        for(int y = 0; y < tempsurface->h; y++)
+//        {
+//            Uint32 pixel = ReadPixel(_src, x, y);
+//            Uint32 Alpha = pixel & fmt.Amask;
+//            Uint32 result = ct.colour & 0x00FFFFFF;
+//            DrawPixel(tempsurface, x, y, result | Alpha);
+//        }
+//    }
+//
+//    SDL_BlitSurfaceWithAlpha(tempsurface, _srcRect, _dest, tempRect);
+//    SDL_FreeSurface(tempsurface); */
+//}
 
 int scrollamount = 0;
 bool isscrolling = 0;
@@ -385,7 +485,7 @@ return _ret;
 
 void FillRect( SDL_Surface* _surface, const int _x, const int _y, const int _w, const int _h, const int r, int g, int b )
 {
-    SDL_Rect rect = {Sint16(_x),Sint16(_y),Sint16(_w),Sint16(_h)};
+    SDL_Rect rect = {Sint16(_x),Sint16(_y),Uint16(_w),Uint16(_h)};
     Uint32 color;
     color = SDL_MapRGB(_surface->format, r, g, b);
     SDL_FillRect(_surface, &rect, color);
@@ -407,7 +507,7 @@ void FillRect( SDL_Surface* _surface, const int color )
 
 void FillRect( SDL_Surface* _surface, const int x, const int y, const int w, const int h, int rgba )
 {
-    SDL_Rect rect = {Sint16(x)  ,Sint16(y) ,Sint16(w) ,Sint16(h) };
+    SDL_Rect rect = {Sint16(x)  ,Sint16(y) ,Uint16(w) ,Uint16(h) };
     SDL_FillRect(_surface, &rect, rgba);
 }
 
@@ -429,24 +529,59 @@ bool intersectRect( float left1, float right1, float bottom1, float top1, float 
 }
 
 void OverlaySurfaceKeyed( SDL_Surface* _src, SDL_Surface* _dest, Uint32 _key )
-{
-    // const SDL_PixelFormat& fmt = *(_src->format);
-    for(int x = 0; x < _src->w; x++)
-    {
-        for(int y = 0; y < _src->h; y++)
-        {
-            Uint32 pixel = ReadPixel(_src, x,y);
-            //endian_swap(pixel);
-            if (( pixel != _key))
-            {
-                DrawPixel(_dest,x,y, pixel);
-            }
-        }
-    }
+{	// Limited to 32bpp only for better performance
+	Uint32 *src = (Uint32 *)_src->pixels;
+	Uint32 *dst = (Uint32 *)_dest->pixels;
+	for (Uint32 i=(_src->w*_src->h); i>0; i--,src++,dst++) {
+		if (*src != _key) *dst = *src;
+	}
 }
+//    // const SDL_PixelFormat& fmt = *(_src->format);
+//    for(int x = 0; x < _src->w; x++)
+//    {
+//        for(int y = 0; y < _src->h; y++)
+//        {
+//            Uint32 pixel = ReadPixel(_src, x,y);
+//            //endian_swap(pixel);
+//            if (( pixel != _key))
+//            {
+//                DrawPixel(_dest,x,y, pixel);
+//            }
+//        }
+//    }
+//}
 
 void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
-{
+{	// Limited to 32bpp only for better performance
+	Uint8 *pixels = (Uint8 *)_src->pixels;
+	if (_pY<0) {	//	up , _pX is ignored
+		Uint32 size = -(_pY) * _src->pitch;
+		memcpy(pixels, pixels+size, (_src->pitch*_src->h)-size);
+		return;
+	}
+	if (_pX<0) {	//	left , _pY is ignored
+		Uint32 pitch = _src->pitch;
+		Uint32 px32 = -(_pX)*4;
+		Uint32 size = pitch - px32;
+		for (Uint32 y=_src->h; y>0; y--, pixels+=pitch)
+			memcpy(pixels, pixels+px32, size);
+		return;
+	}
+	if (_pY>0) {	//	down , _pX is ignored
+		Uint32 size = (_pY) * _src->pitch;
+		memmove(pixels+size, pixels, (_src->pitch*_src->h)-size);
+		return;
+	}
+	if (_pX>0) {	//	right , _pY is ignored , unused?
+		Uint32 pitch = _src->pitch;
+		Uint32 px32 = _pX*4;
+		Uint32 size = pitch - px32;
+		for (Uint32 y=_src->h; y>0; y--, pixels+=pitch)
+			memmove(pixels+px32, pixels, size);
+		return;
+	}
+}
+/*
     SDL_Surface* part1 = NULL;
 
     SDL_Rect rect1;
@@ -464,7 +599,7 @@ void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
 
         setRect(destrect1, 0,  _pY, _pX, _src->h);
 
-        SDL_BlitSurface (part1, NULL, _src, &destrect1);
+        SDL_BlitSurfaceWithAlpha(part1, NULL, _src, &destrect1);
     }
 
     else if(_pY > 0)
@@ -480,7 +615,7 @@ void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
 
         setRect(destrect1, _pX, _pY, _src->w, _src->h - _pY);
 
-        SDL_BlitSurface (part1, NULL, _src, &destrect1);
+        SDL_BlitSurfaceWithAlpha(part1, NULL, _src, &destrect1);
 
     }
 
@@ -497,7 +632,7 @@ void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
 
 		setRect(destrect1, _pX,  0, _src->w - _pX, _src->h);
 
-		SDL_BlitSurface (part1, NULL, _src, &destrect1);
+		SDL_BlitSurfaceWithAlpha(part1, NULL, _src, &destrect1);
 	}
 
 	else if(_pX > 0)
@@ -513,7 +648,7 @@ void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
 
 		setRect(destrect1, 0, 0, _src->w - _pX, _src->h);
 
-		SDL_BlitSurface (part1, NULL, _src, &destrect1);
+		SDL_BlitSurfaceWithAlpha(part1, NULL, _src, &destrect1);
 
 	}
 	//Cleanup temp surface
@@ -523,3 +658,4 @@ void ScrollSurface( SDL_Surface* _src, int _pX, int _pY )
     }
 
 }
+*/

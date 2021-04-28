@@ -314,14 +314,14 @@ void Graphics::bigprint(  int _x, int _y, std::string _s, int r, int g, int b, b
         if (flipmode)
         {
 			SDL_Surface* tempPrint = ScaleSurfaceSlow(flipbfont[curr], bfont[curr]->w *sc,bfont[curr]->h *sc);
-			SDL_Rect printrect = { Sint16((_x) + bfontpos), Sint16(_y) , Sint16(bfont_rect.w*sc), Sint16(bfont_rect.h * sc)};
+			SDL_Rect printrect = { Sint16((_x) + bfontpos), Sint16(_y) , Uint16(bfont_rect.w*sc), Uint16(bfont_rect.h * sc)};
 			BlitSurfaceColoured(tempPrint, NULL, backBuffer, &printrect, ct);
 			SDL_FreeSurface(tempPrint);
         }
         else
         {
 			SDL_Surface* tempPrint = ScaleSurfaceSlow(bfont[curr], bfont[curr]->w *sc,bfont[curr]->h *sc);
-			SDL_Rect printrect = { static_cast<Sint16>((_x) + bfontpos), static_cast<Sint16>(_y) , static_cast<Sint16>((bfont_rect.w*sc)+1), static_cast<Sint16>((bfont_rect.h * sc)+1)};
+			SDL_Rect printrect = { static_cast<Sint16>((_x) + bfontpos), static_cast<Sint16>(_y) , static_cast<Uint16>((bfont_rect.w*sc)+1), static_cast<Uint16>((bfont_rect.h * sc)+1)};
 			BlitSurfaceColoured(tempPrint, NULL, backBuffer, &printrect, ct);
 			SDL_FreeSurface(tempPrint);
         }
@@ -1908,7 +1908,7 @@ void Graphics::drawentities( mapclass& map, entityclass& obj, UtilityClass& help
                 		setcol(obj.entities[i].colour, help);
                 		//flipsprites[obj.entities[i].drawframe].colorTransform(sprites_rect, ct);
                 		//bigbuffer.copyPixels(flipsprites[obj.entities[i].drawframe], sprites_rect, new Point(0, 0));
-						SDL_Rect drawRect = {Sint16(obj.entities[i].xp ), Sint16(obj.entities[i].yp), sprites_rect.x, sprites_rect.y   };
+						SDL_Rect drawRect = {Sint16(obj.entities[i].xp ), Sint16(obj.entities[i].yp), Uint16(sprites_rect.x), Uint16(sprites_rect.y)   };
 						SDL_Surface* TempSurface = ScaleSurface( flipsprites[obj.entities[i].drawframe], 6* sprites_rect.w,6* sprites_rect.w );
 						BlitSurfaceColoured(TempSurface, NULL , backBuffer,  &drawRect, ct );
 						SDL_FreeSurface(TempSurface);
@@ -1921,7 +1921,7 @@ void Graphics::drawentities( mapclass& map, entityclass& obj, UtilityClass& help
 						setcol(obj.entities[i].colour, help);
 						//flipsprites[obj.entities[i].drawframe].colorTransform(sprites_rect, ct);
 						//bigbuffer.copyPixels(flipsprites[obj.entities[i].drawframe], sprites_rect, new Point(0, 0));
-						SDL_Rect drawRect = {Sint16(obj.entities[i].xp ), Sint16(obj.entities[i].yp), Sint16(sprites_rect.x * 6), Sint16(sprites_rect.y * 6 ) };
+						SDL_Rect drawRect = {Sint16(obj.entities[i].xp ), Sint16(obj.entities[i].yp), Uint16(sprites_rect.x * 6), Uint16(sprites_rect.y * 6 ) };
 						SDL_Surface* TempSurface = ScaleSurface( flipsprites[obj.entities[i].drawframe], 6 * sprites_rect.w,6* sprites_rect.h );
 						BlitSurfaceColoured(TempSurface, NULL , backBuffer,  &drawRect, ct );
 						SDL_FreeSurface(TempSurface);
@@ -1942,7 +1942,7 @@ void Graphics::drawbackground( int t, mapclass& map )
     {
     case 1:
         //Starfield
-        FillRect(backBuffer,0x00000);
+        FillRect(backBuffer,0xFF000000);	// Hack: Alpha ON
         for (int i = 0; i < 50; i++)
         {
             stars[i].w = 2;
@@ -2216,7 +2216,7 @@ void Graphics::drawbackground( int t, mapclass& map )
             backgrounddrawn = true;
         }
 
-        SDL_BlitSurface(towerbuffer,NULL, backBuffer,NULL);
+        SDL_BlitSurfaceWithAlpha(towerbuffer,NULL, backBuffer,NULL);
         break;
     case 5:
         //Warp zone, central
@@ -2279,7 +2279,7 @@ void Graphics::drawbackground( int t, mapclass& map )
         break;
     case 6:
         //Final Starfield
-        FillRect(backBuffer,0x000000);
+        FillRect(backBuffer,0xFF000000);	// Hack: Alpha ON
         for (int i = 0; i < 50; i++)
         {
             if (starsspeed[i] <= 8)
@@ -2330,7 +2330,7 @@ void Graphics::drawbackground( int t, mapclass& map )
         }
         break;
     default:
-        FillRect(backBuffer, 0x000000 );
+        FillRect(backBuffer,0xFF000000);	// Hack: Alpha ON
         //TODO
         //backbuffer.copyPixels(backgrounds[t], bg_rect, tl);
         BlitSurfaceStandard(backgrounds[t], NULL, backBuffer, &bg_rect);
@@ -2589,7 +2589,7 @@ void Graphics::drawtowerbackgroundsolo( mapclass& map )
                 drawtowertile3(i * 8, (j * 8) - (map.bypos % 8), temp, map.colstate);
             }
         }
-        SDL_BlitSurface(towerbuffer,NULL, backBuffer,NULL);
+        SDL_BlitSurfaceWithAlpha(towerbuffer,NULL, backBuffer,NULL);
         map.tdrawback = false;
     }
     else
@@ -2602,7 +2602,7 @@ void Graphics::drawtowerbackgroundsolo( mapclass& map )
             drawtowertile3(i * 8, -(map.bypos % 8), temp, map.colstate);
         }
 
-        SDL_BlitSurface(towerbuffer, NULL, backBuffer,NULL);
+        SDL_BlitSurfaceWithAlpha(towerbuffer, NULL, backBuffer,NULL);
     }
 }
 
@@ -2628,7 +2628,7 @@ void Graphics::drawtowerbackground( mapclass& map )
         }
 
         //backbuffer.copyPixels(towerbuffer, towerbuffer.rect, tl, null, null, false);
-        SDL_BlitSurface(towerbuffer,NULL, backBuffer,NULL);
+        SDL_BlitSurfaceWithAlpha(towerbuffer,NULL, backBuffer,NULL);
 
         map.tdrawback = false;
     }
@@ -2645,7 +2645,7 @@ void Graphics::drawtowerbackground( mapclass& map )
         }
 
         //backbuffer.copyPixels(towerbuffer, towerbuffer.rect, tl, null, null, false);
-        SDL_BlitSurface(towerbuffer,NULL, backBuffer,NULL);
+        SDL_BlitSurfaceWithAlpha(towerbuffer,NULL, backBuffer,NULL);
     }
 }
 
@@ -3103,14 +3103,14 @@ void Graphics::bigrprint(int x, int y, std::string& t, int r, int g, int b, bool
 		if (flipmode)
 		{
 			SDL_Surface* tempPrint = ScaleSurfaceSlow(flipbfont[cur], bfont[cur]->w *sc,bfont[cur]->h *sc);
-			SDL_Rect printrect = { Sint16(x + bfontpos), Sint16(y) , Sint16(bfont_rect.w*sc), Sint16(bfont_rect.h * sc)};
+			SDL_Rect printrect = { Sint16(x + bfontpos), Sint16(y) , Uint16(bfont_rect.w*sc), Uint16(bfont_rect.h * sc)};
 			BlitSurfaceColoured(tempPrint, NULL, backBuffer, &printrect ,ct);
 			SDL_FreeSurface(tempPrint);
 		}
 		else
 		{
 			SDL_Surface* tempPrint = ScaleSurfaceSlow(bfont[cur], bfont[cur]->w *sc,bfont[cur]->h *sc);
-			SDL_Rect printrect = { Sint16((x) + bfontpos), Sint16(y) , Sint16(bfont_rect.w*sc), Sint16(bfont_rect.h * sc)};
+			SDL_Rect printrect = { Sint16((x) + bfontpos), Sint16(y) , Uint16(bfont_rect.w*sc), Uint16(bfont_rect.h * sc)};
 			BlitSurfaceColoured(tempPrint, NULL, backBuffer, &printrect, ct);
 			SDL_FreeSurface(tempPrint);
 		}

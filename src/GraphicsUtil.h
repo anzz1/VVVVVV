@@ -13,6 +13,8 @@ void setRect(SDL_Rect& _r, int x, int y, int w, int h);
 
 unsigned int endian_swap(unsigned int x);
 
+void SDL_BlitSurfaceWithAlpha( SDL_Surface* _src, SDL_Rect* _srcRect, SDL_Surface* _dst, SDL_Rect* _dstRect );
+
 SDL_Surface* GetSubSurface( SDL_Surface* metaSurface, int x, int y, int width, int height );
 
 void DrawPixel( SDL_Surface *surface, int x, int y, Uint32 pixel );

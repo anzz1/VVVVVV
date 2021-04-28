@@ -30,6 +30,7 @@ public:
 	//SDL_Window *m_window;
 	//SDL_Renderer *m_renderer;
 	//SDL_Texture *m_screenTexture;
+	SDL_Surface* a_screen;
 	SDL_Surface* m_screen;
 
 	SDL_Rect filterSubrect;
