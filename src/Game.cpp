@@ -595,7 +595,7 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
             if (obj.flags[13] == 0)
             {
                 obj.changeflag(13, 1);
-                dwgfx.createtextbox("  Press ENTER to view map  ", -1, 155, 174, 174, 174);
+                dwgfx.createtextbox("  Press START to view map  ", -1, 155, 174, 174, 174);
                 dwgfx.addline("      and quicksave");
                 dwgfx.textboxtimer(60);
             }
@@ -767,7 +767,7 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
             //Arrow key tutorial
             obj.removetrigger(17);
             dwgfx.createtextbox(" If you prefer, you can press UP or ", -1, 195, 174, 174, 174);
-            dwgfx.addline("   DOWN instead of ACTION to flip.");
+            dwgfx.addline("   DOWN instead of A to flip.");
             dwgfx.textboxtimer(100);
             state = 0;
             break;
@@ -796,7 +796,7 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
                 dwgfx.textboxremovefast();
                 obj.changeflag(3, 1);
                 state = 0;
-                dwgfx.createtextbox("  Press ACTION to flip  ", -1, 25, 174, 174, 174);
+                dwgfx.createtextbox("  Press A to flip  ", -1, 25, 174, 174, 174);
                 dwgfx.textboxtimer(60);
             }
             obj.removetrigger(22);
@@ -2257,11 +2257,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;
@@ -2372,11 +2372,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;
@@ -2486,11 +2486,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;
@@ -2601,11 +2601,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;
@@ -2734,11 +2734,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;
@@ -3054,11 +3054,11 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
 
             if (dwgfx.flipmode)
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 20, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 20, 164, 164, 255);
             }
             else
             {
-                dwgfx.createtextbox(" Press ACTION to continue ", -1, 196, 164, 164, 255);
+                dwgfx.createtextbox(" Press A to continue ", -1, 196, 164, 164, 255);
             }
             dwgfx.textboxcenterx();
             break;

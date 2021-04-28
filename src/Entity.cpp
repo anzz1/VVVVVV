@@ -972,151 +972,151 @@ void entityclass::createblock( int t, int xp, int yp, int w, int h, int trig /*=
         switch(trig)
         {
         case 0: //testing zone
-            blocks[k].prompt = "Press ENTER to explode";
+            blocks[k].prompt = "Press START to explode";
             blocks[k].script = "intro";
             setblockcolour(k, "orange");
             trig=1;
             break;
         case 1:
-            blocks[k].prompt = "Press ENTER to talk to Violet";
+            blocks[k].prompt = "Press START to talk to Violet";
             blocks[k].script = "talkpurple";
             setblockcolour(k, "purple");
             trig=0;
             break;
         case 2:
-            blocks[k].prompt = "Press ENTER to talk to Vitellary";
+            blocks[k].prompt = "Press START to talk to Vitellary";
             blocks[k].script = "talkyellow";
             setblockcolour(k, "yellow");
             trig=0;
             break;
         case 3:
-            blocks[k].prompt = "Press ENTER to talk to Vermilion";
+            blocks[k].prompt = "Press START to talk to Vermilion";
             blocks[k].script = "talkred";
             setblockcolour(k, "red");
             trig=0;
             break;
         case 4:
-            blocks[k].prompt = "Press ENTER to talk to Verdigris";
+            blocks[k].prompt = "Press START to talk to Verdigris";
             blocks[k].script = "talkgreen";
             setblockcolour(k, "green");
             trig=0;
             break;
         case 5:
-            blocks[k].prompt = "Press ENTER to talk to Victoria";
+            blocks[k].prompt = "Press START to talk to Victoria";
             blocks[k].script = "talkblue";
             setblockcolour(k, "blue");
             trig=0;
             break;
         case 6:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_station_1";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 7:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_1";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 8:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_2";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 9:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_3";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 10:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_4";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 11:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_5";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 12:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_outside_6";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 13:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_finallevel";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 14:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_station_2";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 15:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_station_3";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 16:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_station_4";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 17:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_warp_1";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 18:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_warp_2";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 19:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_lab_1";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 20:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_lab_2";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 21:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_secretlab";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 22:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_shipcomputer";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 23:
-            blocks[k].prompt = "Press ENTER to activate terminals";
+            blocks[k].prompt = "Press START to activate terminals";
             blocks[k].script = "terminal_radio";
             setblockcolour(k, "orange");
             trig=0;
             break;
         case 24:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "terminal_jukebox";
             setblockcolour(k, "orange");
             trig=0;
@@ -1182,7 +1182,7 @@ void entityclass::createblock( int t, int xp, int yp, int w, int h, int trig /*=
             trig=0;
             break;
         case 35:
-            blocks[k].prompt = "Press ENTER to activate terminal";
+            blocks[k].prompt = "Press START to activate terminal";
             blocks[k].script = "custom_"+customscript;
             setblockcolour(k, "orange");
             trig=0;

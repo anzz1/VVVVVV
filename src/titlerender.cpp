@@ -49,8 +49,8 @@ void titlerender(Graphics& dwgfx, mapclass& map, Game& game, entityclass& obj, U
 					dwgfx.Print(-1,temp+35,"     MAKE AND PLAY EDITION",tr, tg, tb, true);
 				#endif
 
-        dwgfx.Print(5, 175, "[ Press ACTION to Start ]", tr, tg, tb, true);
-        dwgfx.Print(5, 195, "ACTION = Space, Z, or V", int(tr*0.5f), int(tg*0.5f), int(tb*0.5f), true);
+        dwgfx.Print(5, 175, "[ Press A to Start ]", tr, tg, tb, true);
+        // dwgfx.Print(5, 195, "A = Space, Z, or V", int(tr*0.5f), int(tg*0.5f), int(tb*0.5f), true);
 
         //dwgfx.Print(5, 215, "Press CTRL-F for Fullscreen", tr, tg, tb, true);
 
@@ -1586,7 +1586,7 @@ void gamerender(Graphics& dwgfx, mapclass& map, Game& game, entityclass& obj, Ut
 
      if(map.custommode && !map.custommodeforreal){
         //Return to level editor
-        dwgfx.bprint(5, 5, "[Press ENTER to return to editor]", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), false);
+        dwgfx.bprint(5, 5, "[Press START to return to editor]", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), false);
       }
 
 
@@ -1597,22 +1597,22 @@ void gamerender(Graphics& dwgfx, mapclass& map, Game& game, entityclass& obj, Ut
     dwgfx.drawgui(help);
     if (dwgfx.flipmode)
     {
-        if (game.advancetext) dwgfx.bprint(5, 228, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 228, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
     else
     {
-        if (game.advancetext) dwgfx.bprint(5, 5, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 5, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
 
     if (game.readytotele > 100 && !game.advancetext && game.hascontrol && !script.running && !game.intimetrial)
     {
         if(dwgfx.flipmode)
         {
-            dwgfx.bprint(5, 20, "- Press ENTER to Teleport -", game.readytotele - 20 - (help.glow / 2), game.readytotele - 20 - (help.glow / 2), game.readytotele, true);
+            dwgfx.bprint(5, 20, "- Press START to Teleport -", game.readytotele - 20 - (help.glow / 2), game.readytotele - 20 - (help.glow / 2), game.readytotele, true);
         }
         else
         {
-            dwgfx.bprint(5, 210, "- Press ENTER to Teleport -", game.readytotele - 20 - (help.glow / 2), game.readytotele - 20 - (help.glow / 2), game.readytotele, true);
+            dwgfx.bprint(5, 210, "- Press START to Teleport -", game.readytotele - 20 - (help.glow / 2), game.readytotele - 20 - (help.glow / 2), game.readytotele, true);
         }
     }
 
@@ -1690,7 +1690,7 @@ void gamerender(Graphics& dwgfx, mapclass& map, Game& game, entityclass& obj, Ut
                 }
             }
 
-            dwgfx.Print( 20, 228, "[Press ENTER to stop]", 160 - (help.glow/2), 160 - (help.glow/2), 160 - (help.glow/2), true);
+            dwgfx.Print( 20, 228, "[Press START to stop]", 160 - (help.glow/2), 160 - (help.glow/2), 160 - (help.glow/2), true);
         }
         else if(game.swngame==2)
         {
@@ -2279,7 +2279,7 @@ void maprender(Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, Uti
             dwgfx.Print(185-4, 220, "STATS", 64,64,64);
             dwgfx.Print(258, 220, "SAVE", 64, 64, 64);
 
-            dwgfx.Print(0, 105, "Press ACTION to warp to the ship.", 196, 196, 255 - help.glow, true);
+            dwgfx.Print(0, 105, "Press A to warp to the ship.", 196, 196, 255 - help.glow, true);
         }
         else if(map.custommode){
           dwgfx.Print(30, 220, "MAP", 64,64,64);
@@ -2512,7 +2512,7 @@ void maprender(Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, Uti
             }
             else
             {
-                dwgfx.Print(0, 80, "[Press ACTION to save your game]", 255 - (help.glow * 2), 255 - (help.glow * 2), 255 - help.glow, true);
+                dwgfx.Print(0, 80, "[Press A to save your game]", 255 - (help.glow * 2), 255 - (help.glow * 2), 255 - help.glow, true);
             }
         }
         else
@@ -2563,7 +2563,7 @@ void maprender(Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, Uti
             }
             else
             {
-                dwgfx.Print(0, 80, "[Press ACTION to save your game]", 255 - (help.glow * 2), 255 - (help.glow * 2), 255 - help.glow, true);
+                dwgfx.Print(0, 80, "[Press A to save your game]", 255 - (help.glow * 2), 255 - (help.glow * 2), 255 - help.glow, true);
 
                 if (game.quicksummary != "")
                 {
@@ -2811,11 +2811,11 @@ void towerrender(Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, U
     dwgfx.drawgui(help);
     if (dwgfx.flipmode)
     {
-        if (game.advancetext) dwgfx.bprint(5, 228, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 228, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
     else
     {
-        if (game.advancetext) dwgfx.bprint(5, 5, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 5, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
 
 
@@ -3022,18 +3022,18 @@ void teleporterrender(Graphics& dwgfx, Game& game, mapclass& map, entityclass& o
     {
         //Instructions!
         dwgfx.Print(5, 210, "Press Left/Right to choose a Teleporter", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
-        dwgfx.Print(5, 225, "Press ENTER to Teleport", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        dwgfx.Print(5, 225, "Press START to Teleport", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
 
     dwgfx.drawgui(help);
 
     if (dwgfx.flipmode)
     {
-        if (game.advancetext) dwgfx.bprint(5, 228, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 228, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
     else
     {
-        if (game.advancetext) dwgfx.bprint(5, 5, "- Press ACTION to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
+        if (game.advancetext) dwgfx.bprint(5, 5, "- Press A to advance text -", 220 - (help.glow), 220 - (help.glow), 255 - (help.glow / 2), true);
     }
 
 
