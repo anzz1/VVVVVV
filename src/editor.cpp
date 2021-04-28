@@ -3663,7 +3663,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
     };
 
     if (key.isDown(KEYBOARD_ENTER)) game.press_map = true;
-    if (key.isDown(27) && !ed.settingskey)
+    if (key.isDown(KEYBOARD_ESCAPE) && !ed.settingskey)
     {
         ed.settingskey=true;
         if(ed.textentry)
@@ -3703,7 +3703,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
         }
     }
 
-    if (!key.isDown(27))
+    if (!key.isDown(KEYBOARD_ESCAPE))
     {
         ed.settingskey=false;
     }
@@ -3758,11 +3758,11 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
             }
 
             if (!game.press_action && !game.press_left && !game.press_right
-                    && !key.keymap[SDLK_UP] && !key.keymap[SDLK_DOWN] && !key.isDown(27)) game.jumpheld = false;
+                    && !key.keymap[SDLK_UP] && !key.keymap[SDLK_DOWN] && !key.isDown(KEYBOARD_ESCAPE)) game.jumpheld = false;
             if (!game.jumpheld)
             {
                 if (game.press_action || game.press_left || game.press_right || game.press_map
-                        || key.keymap[SDLK_UP] || key.keymap[SDLK_DOWN] || key.isDown(27))
+                        || key.keymap[SDLK_UP] || key.keymap[SDLK_DOWN] || key.isDown(KEYBOARD_ESCAPE))
                 {
                     game.jumpheld = true;
                 }
@@ -3785,7 +3785,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
                     ed.sbx = ed.sb[ed.pagey+ed.sby].length();
                 }
 
-                if (key.isDown(27))
+                if (key.isDown(KEYBOARD_ESCAPE))
                 {
                     ed.scripteditmod=false;
                     ed.settingsmod=false;
@@ -3795,7 +3795,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
         else if(ed.scripthelppage==1)
         {
             //Script editor!
-            if (key.isDown(27))
+            if (key.isDown(KEYBOARD_ESCAPE))
             {
                 ed.scripthelppage=0;
                 game.jumpheld = true;
@@ -3862,7 +3862,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
             ed.sb[ed.pagey+ed.sby]=key.keybuffer;
             ed.sbx = ed.sb[ed.pagey+ed.sby].length();
 
-            if(!game.press_map && !key.isDown(27)) game.mapheld=false;
+            if(!game.press_map && !key.isDown(KEYBOARD_ESCAPE)) game.mapheld=false;
             if (!game.mapheld)
             {
                 if(game.press_map)
@@ -3945,7 +3945,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
             ed.Desc3=key.keybuffer;
         }
 
-        if(!game.press_map && !key.isDown(27)) game.mapheld=false;
+        if(!game.press_map && !key.isDown(KEYBOARD_ESCAPE)) game.mapheld=false;
         if (!game.mapheld)
         {
             if(game.press_map)
