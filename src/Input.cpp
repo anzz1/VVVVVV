@@ -286,21 +286,21 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
                             map.nexttowercolour();
                         }
                     }
+                    // else if (game.currentmenuoption == 1)
+                    // {
+                    //   //Bring you to the normal playmenu
+                    //     music.playef(11, 10);
+                    //     game.createmenu("playerworlds");
+                    //     map.nexttowercolour();
+                    // }
+                    // else if (game.currentmenuoption == 2)
+                    // {
+                    //     //Options
+                    //     music.playef(11, 10);
+                    //     game.createmenu("graphicoptions");
+                    //     map.nexttowercolour();
+                    // }
                     else if (game.currentmenuoption == 1)
-                    {
-                      //Bring you to the normal playmenu
-                        music.playef(11, 10);
-                        game.createmenu("playerworlds");
-                        map.nexttowercolour();
-                    }
-                    else if (game.currentmenuoption == 2)
-                    {
-                        //Options
-                        music.playef(11, 10);
-                        game.createmenu("graphicoptions");
-                        map.nexttowercolour();
-                    }
-                    else if (game.currentmenuoption == 3)
                     {
                         //Options
                         music.playef(11, 10);
@@ -308,22 +308,22 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
 
 												//Add extra menu for mmmmmm mod
 											  if(music.mmmmmm){
-													game.menuoptions[4] = "soundtrack";
+													game.menuoptions[3] = "soundtrack";
+													game.menuoptionsactive[3] = true;
+													game.menuoptions[4] = "return";
 													game.menuoptionsactive[4] = true;
-													game.menuoptions[5] = "return";
-													game.menuoptionsactive[5] = true;
-													game.nummenuoptions = 6;
+													game.nummenuoptions = 5;
 												}
                         map.nexttowercolour();
                     }
-                    else if (game.currentmenuoption == 4)
+                    else if (game.currentmenuoption == 2)
                     {
                         //Credits
                         music.playef(11, 10);
                         game.createmenu("credits");
                         map.nexttowercolour();
                     }
-                    else if (game.currentmenuoption == 5)
+                    else if (game.currentmenuoption == 3)
                     {
                         //bye!
                         music.playef(2, 10);
@@ -746,11 +746,11 @@ SDL_assert(0 && "Remove open level dir");
 														game.menuoptionsactive[4] = true;
 														game.nummenuoptions = 5;
 													#elif !defined(MAKEANDPLAY)
-														game.menuoptions[4] = "soundtrack";
+														game.menuoptions[3] = "soundtrack";
+														game.menuoptionsactive[3] = true;
+														game.menuoptions[4] = "return";
 														game.menuoptionsactive[4] = true;
-														game.menuoptions[5] = "return";
-														game.menuoptionsactive[5] = true;
-														game.nummenuoptions = 6;
+														game.nummenuoptions = 5;
 													#endif
 												}
 
@@ -837,14 +837,14 @@ SDL_assert(0 && "Remove open level dir");
                         game.createmenu("unlockmenu");
                         map.nexttowercolour();
                     }
-					else if (game.currentmenuoption == 2)
-					{
-						//clear data menu
-						music.playef(11, 10);
-						game.createmenu("controller");
-						map.nexttowercolour();
-					}
-                    else if (game.currentmenuoption == 3)
+					// else if (game.currentmenuoption == 2)
+					// {
+					// 	//clear data menu
+					// 	music.playef(11, 10);
+					// 	game.createmenu("controller");
+					// 	map.nexttowercolour();
+					// }
+                    else if (game.currentmenuoption == 2)
                     {
                         //clear data menu
                         music.playef(11, 10);
@@ -853,7 +853,7 @@ SDL_assert(0 && "Remove open level dir");
                     }
                     
 										if(music.mmmmmm){
-											if (game.currentmenuoption == 4)
+											if (game.currentmenuoption == 3)
 											{
 													//**** TOGGLE MMMMMM
 													if(game.usingmmmmmm > 0){
@@ -868,7 +868,7 @@ SDL_assert(0 && "Remove open level dir");
 													game.createmenu("mainmenu");
 													map.nexttowercolour();
 											}
-											if (game.currentmenuoption == 5)
+											if (game.currentmenuoption == 4)
 											{
 													//back
 													music.playef(11, 10);
@@ -876,7 +876,7 @@ SDL_assert(0 && "Remove open level dir");
 													map.nexttowercolour();
 											}
 										}else{
-											if (game.currentmenuoption == 4)
+											if (game.currentmenuoption == 3)
 											{
 													//back
 													music.playef(11, 10);
@@ -1343,11 +1343,11 @@ SDL_assert(0 && "Remove open level dir");
 								game.menuoptionsactive[4] = true;
 								game.nummenuoptions = 5;
 							#elif !defined(MAKEANDPLAY)
-								game.menuoptions[4] = "soundtrack";
+								game.menuoptions[3] = "soundtrack";
+								game.menuoptionsactive[3] = true;
+								game.menuoptions[4] = "return";
 								game.menuoptionsactive[4] = true;
-								game.menuoptions[5] = "return";
-								game.menuoptionsactive[5] = true;
-								game.nummenuoptions = 6;
+								game.nummenuoptions = 5;
 							#endif
 						}
 					}
@@ -1369,11 +1369,11 @@ SDL_assert(0 && "Remove open level dir");
 														game.menuoptionsactive[4] = true;
 														game.nummenuoptions = 5;
 													#elif !defined(MAKEANDPLAY)
-														game.menuoptions[4] = "soundtrack";
+														game.menuoptions[3] = "soundtrack";
+														game.menuoptionsactive[3] = true;
+														game.menuoptions[4] = "return";
 														game.menuoptionsactive[4] = true;
-														game.menuoptions[5] = "return";
-														game.menuoptionsactive[5] = true;
-														game.nummenuoptions = 6;
+														game.nummenuoptions = 5;
 													#endif
 												}
                         map.nexttowercolour();
