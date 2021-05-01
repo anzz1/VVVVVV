@@ -6502,17 +6502,17 @@ void Game::createmenu( std::string t )
 				#elif !defined(MAKEANDPLAY)
 					menuoptions[0] = "start game";
 					menuoptionsactive[0] = true;
-					// menuoptions[1] = "player levels";
-					// menuoptionsactive[1] = true;
+					menuoptions[1] = "player levels";
+					menuoptionsactive[1] = true;
 					// menuoptions[2] = "graphic options";
 					// menuoptionsactive[2] = true;
-					menuoptions[1] = "game options";
-					menuoptionsactive[1] = true;
-					menuoptions[2] = "view credits";
+					menuoptions[2] = "game options";
 					menuoptionsactive[2] = true;
-					menuoptions[3] = "quit game";
+					menuoptions[3] = "view credits";
 					menuoptionsactive[3] = true;
-					nummenuoptions = 4;
+					menuoptions[4] = "quit game";
+					menuoptionsactive[4] = true;
+					nummenuoptions = 5;
 					menuxoff = -16;
 					menuyoff = -10;
 				#endif
@@ -6521,13 +6521,13 @@ void Game::createmenu( std::string t )
     {
         menuoptions[0] = "play a level";
         menuoptionsactive[0] = true;
-        menuoptions[1] = "level editor";
-        menuoptionsactive[1] = true;
+        // menuoptions[1] = "level editor";
+        // menuoptionsactive[1] = true;
         //menuoptions[2] = "open level folder";
         //menuoptionsactive[2] = true;
-        menuoptions[2] = "back to menu";
-        menuoptionsactive[2] = true;
-        nummenuoptions = 3;
+        menuoptions[1] = "back to menu";
+        menuoptionsactive[1] = true;
+        nummenuoptions = 2;
         menuxoff = -30;
         menuyoff = -40;
     }

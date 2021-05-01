@@ -286,13 +286,13 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
                             map.nexttowercolour();
                         }
                     }
-                    // else if (game.currentmenuoption == 1)
-                    // {
-                    //   //Bring you to the normal playmenu
-                    //     music.playef(11, 10);
-                    //     game.createmenu("playerworlds");
-                    //     map.nexttowercolour();
-                    // }
+                    else if (game.currentmenuoption == 1)
+                    {
+                      //Bring you to the normal playmenu
+                        music.playef(11, 10);
+                        game.createmenu("playerworlds");
+                        map.nexttowercolour();
+                    }
                     // else if (game.currentmenuoption == 2)
                     // {
                     //     //Options
@@ -300,7 +300,7 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
                     //     game.createmenu("graphicoptions");
                     //     map.nexttowercolour();
                     // }
-                    else if (game.currentmenuoption == 1)
+                    else if (game.currentmenuoption == 2)
                     {
                         //Options
                         music.playef(11, 10);
@@ -316,14 +316,14 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
 												}
                         map.nexttowercolour();
                     }
-                    else if (game.currentmenuoption == 2)
+                    else if (game.currentmenuoption == 3)
                     {
                         //Credits
                         music.playef(11, 10);
                         game.createmenu("credits");
                         map.nexttowercolour();
                     }
-                    else if (game.currentmenuoption == 3)
+                    else if (game.currentmenuoption == 4)
                     {
                         //bye!
                         music.playef(2, 10);
@@ -395,13 +395,14 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
                     game.loadcustomlevelstats(); //Should only load a file if it's needed
                     game.createmenu("levellist");
                     map.nexttowercolour();
-                  }else if(game.currentmenuoption==1){
+                  }/*else if(game.currentmenuoption==1){
                     //LEVEL EDITOR HOOK
                     music.playef(11, 10);
                     game.mainmenu = 20;
                     dwgfx.fademode = 2;
                     ed.filename="";
-                  }/*else if(game.currentmenuoption==2){
+                  }*/
+				  /*else if(game.currentmenuoption==2){
                     music.playef(11, 10);
                     //"OPENFOLDERHOOK"
                     //When the player selects the "open level folder" menu option,
@@ -411,7 +412,7 @@ void titleinput(KeyPoll& key, Graphics& dwgfx, mapclass& map, Game& game, entity
                     // - Open the levels folder for whatever operating system we're on
 SDL_assert(0 && "Remove open level dir");
 
-                  }*/else if(game.currentmenuoption==2){
+                  }*/else if(game.currentmenuoption==1){
                     //back
                     music.playef(11, 10);
                     game.createmenu("mainmenu");
