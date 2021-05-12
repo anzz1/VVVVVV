@@ -34,6 +34,14 @@ scriptclass script;
 
  editorclass ed;
 
+#include <SDL_mixer.h>
+#include <dlfcn.h>
+extern "C" {
+#include <mmenu.h>
+}
+void* mmenu = NULL;
+char rom_path[256];
+
 int main(int argc, char *argv[])
 {
     if(!FILESYSTEM_init(argv[0]))
@@ -241,6 +249,9 @@ int main(int argc, char *argv[])
     game.infocus = true;
     key.isActive = true;
 
+	mmenu = dlopen("libmmenu.so", RTLD_LAZY);
+	strcpy(rom_path, getenv("HOME"));
+
     while(!key.quitProgram)
     {
 		//gameScreen.ClearScreen(0x00);
@@ -276,6 +287,35 @@ int main(int argc, char *argv[])
 
 
         key.Poll();
+		if (mmenu && key.isDown(KEYBOARD_ESCAPE)) {
+			Mix_PauseMusic();
+			ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
+			SDL_Surface *screen = SDL_GetVideoSurface();
+			MenuReturnStatus status = ShowMenu(rom_path, NULL, screen, kMenuEventKeyDown);
+			
+			// release that menu key
+			SDL_Event sdlevent;
+			sdlevent.type = SDL_KEYUP;
+			sdlevent.key.keysym.sym = SDLK_ESCAPE;
+			SDL_PushEvent(&sdlevent);
+			
+			if (status==kStatusExitGame) {
+				key.quitProgram = true;
+				continue;
+			}
+			else if (status==kStatusOpenMenu) {
+				// buh
+			}
+			else { // continue
+				key.keymap.clear();
+				game.press_left = false;
+				game.press_right = false;
+				game.press_action = true;
+				game.press_map = false;
+			}
+			Mix_ResumeMusic();
+		}
+		
 		if(key.toggleFullscreen)
 		{
 			if(!gameScreen.isWindowed)
