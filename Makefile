@@ -1,4 +1,4 @@
-PRGNAME		= vvv_sdl12
+PRGNAME		= vvvvvv
 CC		= /opt/trimui-toolchain/bin/arm-linux-gcc
 CXX		= /opt/trimui-toolchain/bin/arm-linux-g++
 STRIP		= /opt/trimui-toolchain/bin/arm-linux-strip
@@ -19,7 +19,9 @@ CFLAGS		= -O2 -DPHYSFS_SUPPORTS_DEFAULT=0 -DPHYSFS_SUPPORTS_ZIP=1 -DGAME_BITDEPT
 CFLAGS		+= -I./src/ -I./lodepng -I./physfs -I./tinyxml $(SDL_CFLAGS) $(LTO)
 CFLAGS		+= -fdata-sections -ffunction-sections -fno-PIC -fomit-frame-pointer
 CXXFLAGS	= $(CFLAGS) -std=gnu++11
-LDFLAGS     	= -nodefaultlibs -lc -lstdc++ -lgcc -lgcc_s -lm -lSDL -lSDL_image -lz -lmad
+LDFLAGS     = -nodefaultlibs -lc -lstdc++ -lgcc -lgcc_s -lm -lSDL -lSDL_image
+LDFLAGS		+= -lSDL_ttf -ldl
+LDFLAGS		+= -lz -lmad
 LDFLAGS		+= -Wl,-Bstatic -lSDL_mixer -lvorbisidec -lvorbisfile -lvorbis -logg -Wl,-Bdynamic
 LDFLAGS		+= -no-pie -Wl,--as-needed -Wl,--gc-sections
 
