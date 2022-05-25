@@ -159,7 +159,9 @@ std::vector<std::string> FILESYSTEM_getLevelDirFileNames()
 
 void PLATFORM_getOSDirectory(char* output)
 {
-	strcpy(output, ".vvvvvv/"); /* TRIMUI
+	sprintf(output, "%s/.vvvvvv/", getenv("HOME"));
+	// strcpy(output, ".vvvvvv/"); 
+	/* TRIMUI
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__) || defined(__OpenBSD__)
 	strcpy(output, PHYSFS_getPrefDir("distractionware", "VVVVVV"));
 #elif defined(_WIN32)
