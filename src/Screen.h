@@ -13,6 +13,7 @@ public:
 
 	void UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect);
 	void ClearScreen(int colour);
+	void upscale32NEON(void* src, void* dst);
 	void FlipScreen();
 
 	const SDL_PixelFormat* GetFormat();

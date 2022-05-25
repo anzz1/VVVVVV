@@ -5,6 +5,9 @@
 #include "Music.h"
 #include "KeyPoll.h"
 #include "Map.h"
+#include "Screen.h"
+
+#include "gfx.h"
 
 scriptclass::scriptclass()
 {
@@ -2516,7 +2519,7 @@ void scriptclass::resetgametomenu( Graphics& dwgfx, Game& game,mapclass& map, en
 	game.createmenu("gameover");
 }
 
-void scriptclass::startgamemode( int t, KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, UtilityClass& help, musicclass& music )
+void scriptclass::startgamemode( int t, KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, UtilityClass& help, musicclass& music, Screen& screen )
 {
 	switch(t)
 	{
@@ -3278,6 +3281,14 @@ void scriptclass::startgamemode( int t, KeyPoll& key, Graphics& dwgfx, Game& gam
 	case 100:
 		game.savestats(map, dwgfx);
 
+		if (dwgfx.backBuffer) GFX_FreeSurface(dwgfx.backBuffer);
+		if (dwgfx.foregroundBuffer) GFX_FreeSurface(dwgfx.foregroundBuffer);
+		if (dwgfx.menubuffer) GFX_FreeSurface(dwgfx.menubuffer);
+		if (dwgfx.towerbuffer) GFX_FreeSurface(dwgfx.towerbuffer);
+		if (dwgfx.tempBuffer) GFX_FreeSurface(dwgfx.tempBuffer);
+		if (screen.a_screen) GFX_FreeSurface(screen.a_screen);
+		if (screen.m_screen) GFX_FreeSurface(screen.m_screen);
+		GFX_Quit();
 		SDL_Quit();
 		exit(0);
 		break;

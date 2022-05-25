@@ -26,6 +26,8 @@
 #include "FileSystemUtils.h"
 #include "Network.h"
 
+#include "gfx.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -35,12 +37,12 @@ scriptclass script;
  editorclass ed;
 
 #include <SDL_mixer.h>
-#include <dlfcn.h>
-extern "C" {
-#include <mmenu.h>
-}
-void* mmenu = NULL;
-char rom_path[256];
+// #include <dlfcn.h>
+// extern "C" {
+// #include <mmenu.h>
+// }
+// void* mmenu = NULL;
+// char rom_path[256];
 
 int main(int argc, char *argv[])
 {
@@ -54,11 +56,30 @@ int main(int argc, char *argv[])
         SDL_INIT_JOYSTICK
     );
     SDL_ShowCursor(SDL_DISABLE);
+	GFX_Init();
 
-    /*if (argc > 2 && strcmp(argv[1], "-renderer") == 0)
-    {
-        SDL_SetHintWithPriority(SDL_HINT_RENDER_DRIVER, argv[2], SDL_HINT_OVERRIDE);
-    }*/
+//	print "LOADING...."
+	SDL_Surface *loadscr = GFX_CreateRGBSurface(0, 64, 7, 32, 0,0,0,0);
+	int32_t loadingpix[14] = {
+		(int32_t)0b11000000111100001100011110001111,(int32_t)0b01100110011110000000000000000000,
+		(int32_t)0b11000001100110011110011011000110,(int32_t)0b01110110110011000000000000000000,
+		(int32_t)0b11000001100110110011011001100110,(int32_t)0b01111110110000000000000000000000,
+		(int32_t)0b11000001100110111111011001100110,(int32_t)0b01111110110111000000000000000000,
+		(int32_t)0b11000001100110110011011001100110,(int32_t)0b01101110110011000000000000000000,
+		(int32_t)0b11000001100110110011011011000110,(int32_t)0b01100110110011011001100110011000,
+		(int32_t)0b11111100111100110011011110001111,(int32_t)0b01100110011110011001100110011000 };
+	uint32_t *dst = (uint32_t*)loadscr->pixels;
+	for (uint32_t i=0; i<14; i++) {
+		for (uint32_t x=0; x<32; x++) {
+			*dst++ = loadingpix[i] >= 0 ? 0 : 0xFFFFFFFF;
+			loadingpix[i] <<= 1;
+		}
+	}
+	SDL_Surface *loadscr_up = GFX_CreateRGBSurface(0,64*2,7*2,32,0,0,0,0);
+	SDL_SoftStretch(loadscr,NULL,loadscr_up,NULL);
+	GFX_UpdateRect(loadscr_up, 640-64*2, 480-7*2, 64*2, 7*2);
+	GFX_FreeSurface(loadscr);
+	GFX_FreeSurface(loadscr_up);
 
     NETWORK_init();
 
@@ -131,24 +152,23 @@ int main(int argc, char *argv[])
     graphics.images.push_back(graphics.grphx.im_image12);
 
     const SDL_PixelFormat* fmt = gameScreen.GetFormat();
-    graphics.backBuffer = SDL_CreateRGBSurface(SDL_SWSURFACE ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask ) ;
-    //SDL_SetSurfaceBlendMode(graphics.backBuffer, SDL_BLENDMODE_NONE);
+    graphics.backBuffer = GFX_CreateRGBSurface(0 ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask ) ;
+    SDL_SetAlpha(graphics.backBuffer, 0,0);
     graphics.Makebfont();
 
-
-    graphics.foregroundBuffer =  SDL_CreateRGBSurface(SDL_SWSURFACE ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
-    //SDL_SetSurfaceBlendMode(graphics.foregroundBuffer, SDL_BLENDMODE_NONE);
+    graphics.foregroundBuffer =  GFX_CreateRGBSurface(0 ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
+    SDL_SetAlpha(graphics.foregroundBuffer, 0,0);
 
     graphics.screenbuffer = &gameScreen;
 
-    graphics.menubuffer = SDL_CreateRGBSurface(SDL_SWSURFACE ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask );
-    //SDL_SetSurfaceBlendMode(graphics.menubuffer, SDL_BLENDMODE_NONE);
+    graphics.menubuffer = GFX_CreateRGBSurface(0 ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask );
+    SDL_SetAlpha(graphics.menubuffer, 0,0);
 
-    graphics.towerbuffer =  SDL_CreateRGBSurface(SDL_SWSURFACE ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
-    //SDL_SetSurfaceBlendMode(graphics.towerbuffer, SDL_BLENDMODE_NONE);
+    graphics.towerbuffer =  GFX_CreateRGBSurface(0 ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
+    SDL_SetAlpha(graphics.towerbuffer, 0,0);
 
-	graphics.tempBuffer = SDL_CreateRGBSurface(SDL_SWSURFACE ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
-    //SDL_SetSurfaceBlendMode(graphics.tempBuffer, SDL_BLENDMODE_NONE);
+    graphics.tempBuffer = GFX_CreateRGBSurface(0 ,320 ,240 ,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask,fmt->Bmask,fmt->Amask  );
+    SDL_SetAlpha(graphics.tempBuffer, 0,0);
 
     //Make a temporary rectangle to hold the offsets
     // SDL_Rect offset;
@@ -157,8 +177,8 @@ int main(int argc, char *argv[])
     // offset.y = 80;
 
     game.gamestate = TITLEMODE;
-    //game.gamestate=EDITORMODE;
-    //game.gamestate = PRELOADER; //Remember to uncomment this later!
+    //game.gamestate= EDITORMODE;
+    //game.gamestate = PRELOADER;
 
     game.menustart = false;
     game.mainmenu = 0;
@@ -249,8 +269,8 @@ int main(int argc, char *argv[])
     game.infocus = true;
     key.isActive = true;
 
-	mmenu = dlopen("libmmenu.so", RTLD_LAZY);
-	strcpy(rom_path, getenv("HOME"));
+	// mmenu = dlopen("libmmenu.so", RTLD_LAZY);
+	// strcpy(rom_path, getenv("HOME"));
 
     while(!key.quitProgram)
     {
@@ -287,34 +307,34 @@ int main(int argc, char *argv[])
 
 
         key.Poll();
-		if (mmenu && key.isDown(KEYBOARD_ESCAPE)) {
-			Mix_PauseMusic();
-			ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
-			SDL_Surface *screen = SDL_GetVideoSurface();
-			MenuReturnStatus status = ShowMenu(rom_path, NULL, screen, kMenuEventKeyDown);
-			
-			// release that menu key
-			SDL_Event sdlevent;
-			sdlevent.type = SDL_KEYUP;
-			sdlevent.key.keysym.sym = SDLK_ESCAPE;
-			SDL_PushEvent(&sdlevent);
-			
-			if (status==kStatusExitGame) {
-				key.quitProgram = true;
-				continue;
-			}
-			else if (status==kStatusOpenMenu) {
-				// buh
-			}
-			else { // continue
-				key.keymap.clear();
-				game.press_left = false;
-				game.press_right = false;
-				game.press_action = true;
-				game.press_map = false;
-			}
-			Mix_ResumeMusic();
-		}
+		// if (mmenu && key.isDown(KEYBOARD_ESCAPE)) {
+		// 	Mix_PauseMusic();
+		// 	ShowMenu_t ShowMenu = (ShowMenu_t)dlsym(mmenu, "ShowMenu");
+		// 	SDL_Surface *screen = SDL_GetVideoSurface();
+		// 	MenuReturnStatus status = ShowMenu(rom_path, NULL, screen, kMenuEventKeyDown);
+		//
+		// 	// release that menu key
+		// 	SDL_Event sdlevent;
+		// 	sdlevent.type = SDL_KEYUP;
+		// 	sdlevent.key.keysym.sym = SDLK_ESCAPE;
+		// 	SDL_PushEvent(&sdlevent);
+		//
+		// 	if (status==kStatusExitGame) {
+		// 		key.quitProgram = true;
+		// 		continue;
+		// 	}
+		// 	else if (status==kStatusOpenMenu) {
+		// 		// buh
+		// 	}
+		// 	else { // continue
+		// 		key.keymap.clear();
+		// 		game.press_left = false;
+		// 		game.press_right = false;
+		// 		game.press_action = true;
+		// 		game.press_map = false;
+		// 	}
+		// 	Mix_ResumeMusic();
+		// }
 		
 		if(key.toggleFullscreen)
 		{
@@ -362,7 +382,8 @@ int main(int argc, char *argv[])
             {
                 game.setGlobalSoundVol(0);
             }
-            FillRect(graphics.backBuffer, 0x00000000);
+            GFX_ClearSurface(graphics.backBuffer);
+            //FillRect(graphics.backBuffer, 0x00000000);
             graphics.bprint(5, 110, "Game paused", 196 - help.glow, 255 - help.glow, 196 - help.glow, true);
             graphics.bprint(5, 120, "[click to resume]", 196 - help.glow, 255 - help.glow, 196 - help.glow, true);
             graphics.bprint(5, 230, "Press M to mute in game", 164 - help.glow, 196 - help.glow, 164 - help.glow, true);
@@ -381,7 +402,7 @@ int main(int argc, char *argv[])
             case EDITORMODE:
 				graphics.flipmode = false;
                 //Input
-                editorinput(key, graphics, game, map, obj, help, music);
+                editorinput(key, graphics, game, map, obj, help, music, gameScreen);
                 //Render
                 editorrender(key, graphics, game, map, obj, help);
                 ////Logic
@@ -389,7 +410,7 @@ int main(int argc, char *argv[])
                 break;
             case TITLEMODE:
                 //Input
-                titleinput(key, graphics, map, game, obj, help, music);
+                titleinput(key, graphics, map, game, obj, help, music, gameScreen);
                 //Render
                 titlerender(graphics, map, game, obj, help, music);
                 ////Logic
@@ -398,7 +419,7 @@ int main(int argc, char *argv[])
             case GAMEMODE:
                 if (map.towermode)
                 {
-					gameinput(key, graphics, game, map, obj, help, music);
+					gameinput(key, graphics, game, map, obj, help, music, gameScreen);
 
                     //if(game.recording==1)
                     //{
@@ -425,7 +446,7 @@ int main(int argc, char *argv[])
                             script.run(key, graphics, game, map, obj, help, music);
                         }
 
-                        gameinput(key, graphics, game, map, obj, help, music);
+                        gameinput(key, graphics, game, map, obj, help, music, gameScreen);
                         //}
                         gamerender(graphics,map, game,  obj, help);
                         gamelogic(graphics, game,obj, music, map,  help);
@@ -463,7 +484,7 @@ int main(int argc, char *argv[])
                             {
                                 script.run(key, graphics, game, map, obj, help, music);
                             }
-                            gameinput(key, graphics, game, map, obj, help, music);
+                            gameinput(key, graphics, game, map, obj, help, music, gameScreen);
                         }
                     }
                     maplogic(graphics, game,  obj, music, map, help);
@@ -575,6 +596,14 @@ int main(int argc, char *argv[])
 
     //Quit SDL
     NETWORK_shutdown();
+	if (graphics.backBuffer) GFX_FreeSurface(graphics.backBuffer);
+	if (graphics.foregroundBuffer) GFX_FreeSurface(graphics.foregroundBuffer);
+	if (graphics.menubuffer) GFX_FreeSurface(graphics.menubuffer);
+	if (graphics.towerbuffer) GFX_FreeSurface(graphics.towerbuffer);
+	if (graphics.tempBuffer) GFX_FreeSurface(graphics.tempBuffer);
+	if (gameScreen.a_screen) GFX_FreeSurface(gameScreen.a_screen);
+	if (gameScreen.m_screen) GFX_FreeSurface(gameScreen.m_screen);
+	GFX_Quit();
     SDL_Quit();
     FILESYSTEM_deinit();
 

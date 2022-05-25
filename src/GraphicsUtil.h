@@ -47,6 +47,7 @@ void ScrollSurface(SDL_Surface* _src, int pX, int py);
 
 SDL_Surface * FlipSurfaceHorizontal(SDL_Surface* _src);
 SDL_Surface * FlipSurfaceVerticle(SDL_Surface* _src);
+SDL_Surface * FlipSurfaceVerticleSDL(SDL_Surface* _src);
 SDL_Surface * ScaleSurfaceSlow( SDL_Surface *_surface, int Width, int Height );
 SDL_Surface* ApplyFilter( SDL_Surface* _src );
 

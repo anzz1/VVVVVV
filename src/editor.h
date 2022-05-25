@@ -257,6 +257,6 @@ void editorrender(KeyPoll& key, Graphics& dwgfx, Game& game,  mapclass& map, ent
 void editorlogic(KeyPoll& key, Graphics& dwgfx, Game& game, entityclass& obj,  musicclass& music, mapclass& map, UtilityClass& help);
 
 void editorinput(KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map,
-                 entityclass& obj, UtilityClass& help, musicclass& music);
+                 entityclass& obj, UtilityClass& help, musicclass& music, Screen& screen);
 
 #endif /* EDITOR_H */

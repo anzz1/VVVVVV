@@ -2,26 +2,12 @@
 
 #include "FileSystemUtils.h"
 #include "GraphicsUtil.h"
+#include "gfx.h"
 
 #include <stdlib.h>
 
-// Used to create the window icon
-extern "C"
-{
-	extern unsigned lodepng_decode24(
-		unsigned char** out,
-		unsigned* w,
-		unsigned* h,
-		const unsigned char* in,
-		size_t insize
-	);
-}
-
 Screen::Screen()
 {
-   // m_window = NULL;
-    //m_renderer = NULL;
-   // m_screenTexture = NULL;
     m_screen = NULL;
     isWindowed = true;
     stretchMode = 0;
@@ -30,117 +16,22 @@ Screen::Screen()
     filterSubrect.y = 1;
     filterSubrect.w = 318;
     filterSubrect.h = 238;
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
 
-	// Uncomment this next line when you need to debug -flibit
-	// SDL_SetHintWithPriority(SDL_HINT_RENDER_DRIVER, "software", SDL_HINT_OVERRIDE);
-	/*SDL_CreateWindowAndRenderer(
-		640,
-		480,
-		SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE,
-		&m_window,
-		&m_renderer
-	);*/
-	//SDL_SetWindowTitle(m_window, "VVVVVV");
-
-	/*unsigned char *fileIn = NULL;
-	size_t length = 0;
-	unsigned char *data;
-	unsigned int width, height;
-	FILESYSTEM_loadFileToMemory("VVVVVV.png", &fileIn, &length);
-	lodepng_decode24(&data, &width, &height, fileIn, length);
-	FILESYSTEM_freeMemory(&fileIn);
-	SDL_Surface *icon = SDL_CreateRGBSurfaceFrom(
-		data,
-		width,
-		height,
-		24,
-		width * 3,
-		0x000000FF,
-		0x0000FF00,
-		0x00FF0000,
-		0x00000000
-	);
-	SDL_SetWindowIcon(m_window, icon);
-	SDL_FreeSurface(icon);
-	free(data);*/
-	a_screen = SDL_SetVideoMode(320, 240, 16, SDL_SWSURFACE);
-	m_screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 32,
+	a_screen = GFX_CreateRGBSurface(0, 640, 480, 32, 0,0,0,0);
+	m_screen = GFX_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 32,
 	0x00FF0000,
 	0x0000FF00,
 	0x000000FF,
 	0xFF000000);
-	/*m_screen->format->Rshift = 0;
-	m_screen->format->Gshift = 16;
-	m_screen->format->Bshift = 8;
-	m_screen->format->Ashift = 24;*/
-	// FIXME: This surface should be the actual backbuffer! -flibit
-	/*m_screen = SDL_CreateRGBSurface(
-		SDL_SWSURFACE,
-		320,
-		240,
-		32,
-		0x00FF0000,
-		0x0000FF00,
-		0x000000FF,
-		0xFF000000
-	);*/
-	/*m_screenTexture = SDL_CreateTexture(
-		m_renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		320,
-		240
-	);*/
 
     badSignalEffect = false;
 
     glScreen = true;
 }
 
-void Screen::ResizeScreen(int x , int y)
-{
-	/*static int resX = 320;
-	static int resY = 240;
-	if (x != -1 && y != -1)
-	{
-		// This is a user resize!
-		resX = x;
-		resY = y;
-	}
+void Screen::ResizeScreen(int x , int y) {}
 
-	if(!isWindowed)
-	{
-		SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-	}
-	else
-	{
-		SDL_SetWindowFullscreen(m_window, 0);
-		if (x != -1 && y != -1)
-		{
-			SDL_SetWindowSize(m_window, resX, resY);
-			SDL_SetWindowPosition(m_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-		}
-	}
-	if (stretchMode == 1)
-	{
-		int winX, winY;
-		SDL_GetWindowSize(m_window, &winX, &winY);
-		SDL_RenderSetLogicalSize(m_renderer, winX, winY);
-		SDL_RenderSetIntegerScale(m_renderer, SDL_FALSE);
-	}
-	else
-	{
-		SDL_RenderSetLogicalSize(m_renderer, 320, 240);
-		SDL_RenderSetIntegerScale(m_renderer, (SDL_bool) (stretchMode == 2));
-	}
-	SDL_ShowWindow(m_window);*/
-}
-
-void Screen::GetWindowSize(int* x, int* y)
-{
-	//SDL_GetWindowSize(m_window, x, y);
-}
+void Screen::GetWindowSize(int* x, int* y) {}
 
 void Screen::UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect )
 {
@@ -154,12 +45,12 @@ void Screen::UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect )
         buffer = ApplyFilter(buffer);
     }
 
-    FillRect(m_screen, 0x000);
+    GFX_ClearSurface(m_screen);
     BlitSurfaceStandard(buffer,NULL,m_screen,rect);
 
     if(badSignalEffect)
     {
-        SDL_FreeSurface(buffer);
+        GFX_FreeSurface(buffer);
     }
     //SDL_Flip(screen);
 }
@@ -169,45 +60,55 @@ const SDL_PixelFormat* Screen::GetFormat()
     return m_screen->format;
 }
 
+//
+//	upscale 2x 32bpp NEON
+//		src width must be 16xN
+//
+void Screen::upscale32NEON(void* src, void* dst) {
+	asm volatile (
+	".equ	WIDTH,	320		;"
+	".equ	HEIGHT,	240		;"
+	"	add r2,%0,#(WIDTH*HEIGHT*4);"
+	"1:	add r3,%1,#(WIDTH*2*4)	;"
+	"	add lr,%1,#(WIDTH*2*2*4);"
+	"2:	vldmia %0!,{q8-q11}	;"
+	"	vdup.32 d31,d23[1]	;"
+	"	vdup.32 d30,d23[0]	;"
+	"	vdup.32 d29,d22[1]	;"
+	"	vdup.32 d28,d22[0]	;"
+	"	vdup.32 d27,d21[1]	;"
+	"	vdup.32 d26,d21[0]	;"
+	"	vdup.32 d25,d20[1]	;"
+	"	vdup.32 d24,d20[0]	;"
+	"	vdup.32 d23,d19[1]	;"
+	"	vdup.32 d22,d19[0]	;"
+	"	vdup.32 d21,d18[1]	;"
+	"	vdup.32 d20,d18[0]	;"
+	"	vdup.32 d19,d17[1]	;"
+	"	vdup.32 d18,d17[0]	;"
+	"	vdup.32 d17,d16[1]	;"
+	"	vdup.32 d16,d16[0]	;"
+	"	vstmia %1!,{q8-q15}	;"
+	"	vstmia r3!,{q8-q15}	;"
+	"	cmp r3,lr		;"
+	"	bne 2b			;"
+	"	cmp %0,r2		;"
+	"	mov %1,lr		;"
+	"	bne 1b			"
+	:: "r"(src), "r"(dst)
+	: "r2","r3","lr","q8","q9","q10","q11","q12","q13","q14","q15","memory","cc"
+	);
+}
+
 void Screen::FlipScreen()
 {
-	/*SDL_UpdateTexture(
-		m_screenTexture,
-		NULL,
-		m_screen->pixels,
-		m_screen->pitch
-	);
-	SDL_RenderCopy(
-		m_renderer,
-		m_screenTexture,
-		isFiltered ? &filterSubrect : NULL,
-		NULL
-	);
-	SDL_RenderPresent(m_renderer);
-	SDL_RenderClear(m_renderer);*/
-
-//	convert to 16bpp
-	Uint32 *src = (Uint32 *)m_screen->pixels;
-	Uint32 *dst = (Uint32 *)a_screen->pixels;
-	register Uint32 a,b;
-	for (Uint32 i=0;i<320*240/2;i++) {
-		a = *src++; b = *src++;
-		*dst++ =(a&0x00F80000)>>8  |	//R1
-			(a&0x0000FC00)>>5  |	//G1
-			(a&0x000000F8)>>3  |	//B1
-			(b&0x00F80000)<<8  |	//R2
-			(b&0x0000FC00)<<11 |	//G2
-			(b&0x000000F8)<<13;	//B2
-//		*dst++ =(a&0x000000F8)<<8  |	//R1
-//			(a&0x0000FC00)>>5  |	//G1
-//			(a&0x00F80000)>>19 |	//B1
-//			(b&0x000000F8)<<24 |	//R2
-//			(b&0x0000FC00)<<11 |	//G2
-//			(b&0x00F80000)>>3;	//B2
+	if (isFiltered == false) {
+		upscale32NEON(m_screen->pixels, a_screen->pixels);
+		GFX_Flip(a_screen);
+	} else {
+		GFX_Flip(m_screen);
 	}
-
-	SDL_Flip(a_screen);
-	SDL_FillRect(m_screen, NULL, 0);
+//	GFX_ClearSurface(m_screen);
 }
 
 void Screen::toggleFullScreen()
@@ -222,21 +123,12 @@ void Screen::toggleStretchMode()
 	ResizeScreen(-1, -1);
 }
 
-void Screen::toggleLinearFilter()
-{
-	/*isFiltered = !isFiltered;
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, isFiltered ? "linear" : "nearest");
-	SDL_DestroyTexture(m_screenTexture);
-	m_screenTexture = SDL_CreateTexture(
-		m_renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		320,
-		240
-	);*/
+void Screen::toggleLinearFilter() {
+	isFiltered = !isFiltered;
 }
 
 void Screen::ClearScreen( int colour )
 {
-	FillRect(m_screen, colour) ;
+	if (!colour) GFX_ClearSurface(m_screen);
+	else FillRect(m_screen, colour) ;
 }

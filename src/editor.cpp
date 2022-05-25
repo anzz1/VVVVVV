@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Script.h"
 //#include "UtilityClass.h"
+#include "Screen.h"
 #include "time.h"
 
 #include "tinyxml.h"
@@ -1594,7 +1595,7 @@ void editorclass::findstartpoint(Game& game)
         game.edsavery = 100;
         game.edsavegc = 0;
         game.edsavey--;
-        game.edsavedir=1-edentity[testeditor].p1;
+        game.edsavedir=1;
     }
     else
     {
@@ -3635,7 +3636,7 @@ void editorlogic( KeyPoll& key, Graphics& dwgfx, Game& game, entityclass& obj, m
 }
 
 
-void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, UtilityClass& help, musicclass& music )
+void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, entityclass& obj, UtilityClass& help, musicclass& music, Screen& screen )
 {
     //TODO Mouse Input!
     game.mx = (float) key.mx;
@@ -3649,20 +3650,16 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
     game.press_map = false;
 
     if (key.isDown(KEYBOARD_LEFT) || key.isDown(KEYBOARD_a))
-    {
         game.press_left = true;
-    }
     if (key.isDown(KEYBOARD_RIGHT) || key.isDown(KEYBOARD_d))
-    {
         game.press_right = true;
-    }
-    if (key.isDown(KEYBOARD_z) || key.isDown(KEYBOARD_SPACE) || key.isDown(KEYBOARD_v))
-    {
-        // || key.isDown(KEYBOARD_UP) || key.isDown(KEYBOARD_DOWN)
+    if (key.isDown(KEYBOARD_z) || key.isDown(KEYBOARD_SPACE) 
+     // || key.isDown(KEYBOARD_UP) || key.isDown(KEYBOARD_DOWN)
+    || key.isDown(KEYBOARD_v) || key.isDown(SDLK_LCTRL) 
+    || key.isDown(SDLK_LSHIFT) || key.isDown(SDLK_LALT))
         game.press_action = true;
-    };
 
-    if (key.isDown(KEYBOARD_ENTER)) game.press_map = true;
+    if (key.isDown(KEYBOARD_ENTER) || key.isDown(SDLK_RCTRL)) game.press_map = true;
     if (key.isDown(KEYBOARD_ESCAPE) && !ed.settingskey)
     {
         ed.settingskey=true;
@@ -4548,7 +4545,7 @@ void editorinput( KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map, enti
 
                         music.stopmusic();
                         dwgfx.backgrounddrawn=false;
-                        script.startgamemode(21, key, dwgfx, game, map, obj, help, music);
+                        script.startgamemode(21, key, dwgfx, game, map, obj, help, music, screen);
                     }
                     //Return to game
                     //game.gamestate=GAMEMODE;

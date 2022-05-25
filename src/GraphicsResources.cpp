@@ -5,6 +5,8 @@
 #include <SDL_image.h>
 #include <Screen.h>
 
+#include "gfx.h"
+
 // Used to load PNG data
 extern "C"
 {
@@ -30,6 +32,7 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 	SDL_Surface* loadedImage = NULL;
 	//The optimized image that will be used
 	SDL_Surface* optimizedImage = NULL;
+	SDL_Surface* optimizedImage_gfx = NULL;
 
 	unsigned char *data;
 	unsigned int width, height;
@@ -60,34 +63,14 @@ SDL_Surface* LoadImage(const char *filename, bool noBlend = true, bool noAlpha =
 		noAlpha ? 0x00000000 : 0xFF000000
 	);
 	
-//	optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
-	Screen gameScreen;
-	optimizedImage = SDL_ConvertSurface(loadedImage,gameScreen.m_screen->format,0);
+	optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
 	SDL_FreeSurface(loadedImage);
 	free(data);
-	return optimizedImage;
+	optimizedImage_gfx = GFX_DuplicateSurface(optimizedImage);
+	SDL_FreeSurface(optimizedImage);
 
-	/*if (loadedImage != NULL)
-	{
-		optimizedImage = SDL_ConvertSurfaceFormat(
-			loadedImage,
-			SDL_PIXELFORMAT_ABGR8888, // FIXME: Format? -flibit
-			0
-		);
-		SDL_FreeSurface( loadedImage );
-		free(data);
-		if (noBlend)
-		{
-			SDL_SetSurfaceBlendMode(optimizedImage, SDL_BLENDMODE_BLEND);
-		}
-		return optimizedImage;
-	}
-	else
-	{
-		fprintf(stderr,"Image not found: %s\n", filename);
-		SDL_assert(0 && "Image not found! See stderr.");
-		return NULL;
-	}*/
+	return optimizedImage_gfx;
+
 }
 
 GraphicsResources::GraphicsResources(void)

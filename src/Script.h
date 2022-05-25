@@ -7,7 +7,7 @@
 #include "Enums.h"
 
 
-class KeyPoll; class Graphics; class Game; class mapclass; class entityclass; class UtilityClass;class musicclass;
+class KeyPoll; class Graphics; class Game; class mapclass; class entityclass; class UtilityClass; class musicclass; class Screen;
 
 
 class scriptclass
@@ -38,7 +38,7 @@ public:
                          entityclass& obj, UtilityClass& help, musicclass& music);
 
     void startgamemode(int t, KeyPoll& key, Graphics& dwgfx, Game& game, mapclass& map,
-                       entityclass& obj, UtilityClass& help, musicclass& music);
+                       entityclass& obj, UtilityClass& help, musicclass& music, Screen& screen);
 
     void teleport(Graphics& dwgfx, Game& game, mapclass& map,
                   entityclass& obj, UtilityClass& help, musicclass& music);

@@ -764,6 +764,7 @@ void Game::updatestate( Graphics& dwgfx, mapclass& map, entityclass& obj, Utilit
             break;
 
         case 17:
+	        // TODO: disable this since we disabled dpad input
             //Arrow key tutorial
             obj.removetrigger(17);
             dwgfx.createtextbox(" If you prefer, you can press UP or ", -1, 195, 174, 174, 174);
@@ -6504,15 +6505,15 @@ void Game::createmenu( std::string t )
 					menuoptionsactive[0] = true;
 					menuoptions[1] = "player levels";
 					menuoptionsactive[1] = true;
-					// menuoptions[2] = "graphic options";
-					// menuoptionsactive[2] = true;
-					menuoptions[2] = "game options";
+					menuoptions[2] = "graphic options";
 					menuoptionsactive[2] = true;
-					menuoptions[3] = "view credits";
+					menuoptions[3] = "game options";
 					menuoptionsactive[3] = true;
-					menuoptions[4] = "quit game";
+					menuoptions[4] = "view credits";
 					menuoptionsactive[4] = true;
-					nummenuoptions = 5;
+					menuoptions[5] = "quit game";
+					menuoptionsactive[5] = true;
+					nummenuoptions = 6;
 					menuxoff = -16;
 					menuyoff = -10;
 				#endif
@@ -6521,13 +6522,13 @@ void Game::createmenu( std::string t )
     {
         menuoptions[0] = "play a level";
         menuoptionsactive[0] = true;
-        // menuoptions[1] = "level editor";
-        // menuoptionsactive[1] = true;
+        menuoptions[1] = "level editor";
+        menuoptionsactive[1] = true;
         //menuoptions[2] = "open level folder";
         //menuoptionsactive[2] = true;
-        menuoptions[1] = "back to menu";
-        menuoptionsactive[1] = true;
-        nummenuoptions = 2;
+        menuoptions[2] = "back to menu";
+        menuoptionsactive[2] = true;
+        nummenuoptions = 3;
         menuxoff = -30;
         menuyoff = -40;
     }
@@ -6780,14 +6781,14 @@ void Game::createmenu( std::string t )
 					menuoptionsactive[0] = true;
 					menuoptions[1] = "unlock play modes";
 					menuoptionsactive[1] = true;
-					// menuoptions[2] = "game pad options";
-					// menuoptionsactive[2] = true;
-					menuoptions[2] = "clear data";
+					menuoptions[2] = "game pad options";
 					menuoptionsactive[2] = true;
-
-					menuoptions[3] = "return";
+					menuoptions[3] = "clear data";
 					menuoptionsactive[3] = true;
-					nummenuoptions = 4;
+
+					menuoptions[4] = "return";
+					menuoptionsactive[4] = true;
+					nummenuoptions = 5;
 					menuxoff = -40;
 					menuyoff = 0;
 				#endif
