@@ -19,11 +19,11 @@ CFLAGS		= -Ofast -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -march
 CFLAGS		+= -DPHYSFS_SUPPORTS_DEFAULT=0 -DPHYSFS_SUPPORTS_ZIP=1 -DGAME_BITDEPTH=32
 CFLAGS		+= -I./src/ -I./lodepng -I./physfs -I./tinyxml $(SDL_CFLAGS) $(LTO)
 CFLAGS		+= -fno-PIC -fomit-frame-pointer
-#CFLAGS		+= -fdata-sections -ffunction-sections
+CFLAGS		+= -fdata-sections -ffunction-sections
 CXXFLAGS	= $(CFLAGS) -std=gnu++11
-LDFLAGS     	= -nodefaultlibs -lc -lstdc++ -lgcc -lgcc_s -lm -lSDL -lSDL_image -lz -lmad
+LDFLAGS     	= -nodefaultlibs -lc -lstdc++ -lgcc -lgcc_s -lm -lSDL -lSDL_image -lSDL_mixer -lz # -lmad
 LDFLAGS     	+= -lmi_sys -lmi_gfx -lpthread
-LDFLAGS		+= -Wl,-Bstatic -lSDL_mixer -lvorbisfile -lvorbis -logg -Wl,-Bdynamic
+#LDFLAGS	+= -Wl,-Bstatic -lSDL_mixer -lvorbisfile -lvorbis -logg -Wl,-Bdynamic
 LDFLAGS		+= -no-pie -Wl,--as-needed -Wl,--gc-sections -s
 
 # Rules to make executable
